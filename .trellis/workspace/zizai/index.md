@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 5
+- **Total Sessions**: 6
 - **Last Active**: 2026-04-08
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~267 | Active |
+| `journal-1.md` | ~327 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 6 | 2026-04-08 | Phase 2 Sub1: Sanity Write Layer + Schema Enhancement | `bcba585`, `13a9b49` | `main` |
 | 5 | 2026-04-08 | B2B Product Showcase Enhancement | `5d25a41` | `main` |
 | 4 | 2026-04-07 | Finish Work Checklist — Phase 1 代码质量审查 | - | `-` |
 | 3 | 2026-04-03 | Fix: Monorepo tsconfig 红色错误 — 添加根 tsconfig.json + project references | none | `-` |

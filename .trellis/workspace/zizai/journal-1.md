@@ -265,3 +265,63 @@ Monorepo 项目根目录缺少 `tsconfig.json`，VSCode TypeScript Language Serv
 ### Next Steps
 
 - None - task complete
+
+
+## Session 6: Phase 2 Sub1: Sanity Write Layer + Schema Enhancement
+
+**Date**: 2026-04-08
+**Task**: Phase 2 Sub1: Sanity Write Layer + Schema Enhancement
+**Branch**: `main`
+
+### Summary
+
+(Add summary)
+
+### Main Changes
+
+## Changes
+
+| Component | Description |
+| --------- | ----------- |
+| Write Client | `getSanityWriteClient()` using `SANITY_API_WRITE_TOKEN` |
+| Post Status | `status` field: draft → in_review → published |
+| Frontend Filter | Queries filter `status == "published"` only |
+| Mutations API | `createPost`, `publishPost`, `createProduct`, batch ops, `deleteDocument` |
+| Admin Query | `getAllPostSummaries()` for pipeline (all statuses) |
+| Spec Update | `database-guidelines.md` updated with actual mutation patterns |
+
+## Key Files
+
+- `packages/sanity/src/env.ts` — write token env var
+- `packages/sanity/src/client.ts` — write client
+- `packages/sanity/src/mutations.ts` — all write operations
+- `packages/sanity/src/schema-types/post.ts` — status field
+- `packages/sanity/src/queries.ts` — status filter + admin query
+- `packages/sanity/src/types.ts` — PostStatus type
+
+## Design Decisions
+
+- Content pipeline creates posts as `draft` by default
+- Frontend never sees non-published content (GROQ filter)
+- Write client requires separate token from read token
+- Mutations return `MutationResult` with success/error, no throw
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `bcba585` | (see git log) |
+| `13a9b49` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
