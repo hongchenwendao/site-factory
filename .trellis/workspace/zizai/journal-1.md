@@ -203,3 +203,65 @@ Monorepo 项目根目录缺少 `tsconfig.json`，VSCode TypeScript Language Serv
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: B2B Product Showcase Enhancement
+
+**Date**: 2026-04-08
+**Task**: B2B Product Showcase Enhancement
+**Branch**: `main`
+
+### Summary
+
+(Add summary)
+
+### Main Changes
+
+## B2B产品展示增强 — 分类+询盘+B2B字段
+
+| Feature | Description |
+|---------|-------------|
+| Product Category Schema | 新增 `productCategory` 文档类型（name, slug, description, image），注册到 Sanity |
+| B2B Fields | 移除 `price`，新增 `category`(reference)、`moq`、`leadTime`、`certifications` |
+| TypeScript Types | 新增 `ProductCategoryReference`、`ProductCategorySummary`，更新 `ProductSummary` |
+| GROQ Queries | 查询包含 category + B2B 字段，新增 `getProductCategories()` |
+| Demo Data | 新增 `demoCategories`（Solar Panels / Energy Storage），产品添加 B2B 字段 |
+| Category Filter | 产品列表页支持 `?category=xxx` 过滤，Server Component 实现 |
+| Product Card | 显示分类标签 + MOQ 信息 |
+| Product Detail | Ordering Info 卡片（MOQ/leadTime/certifications）+ "Request a Quote" CTA |
+| Contact Form | 读取 `?product=` 参数预填询盘消息，`useMemo` 替代 `useEffect` |
+
+**Quality Gate**: lint + typecheck 全部通过，trellis:check 规范审查无违规
+
+**Updated Files**:
+- `packages/sanity/src/schema-types/product-category.ts` (NEW)
+- `packages/sanity/src/schema-types/product.ts`
+- `packages/sanity/src/schema.ts`
+- `packages/sanity/src/types.ts`
+- `packages/sanity/src/queries.ts`
+- `packages/sanity/src/demo/data.ts`
+- `apps/site-a/src/app/(site)/products/page.tsx`
+- `apps/site-a/src/app/(site)/products/category-filter.tsx` (NEW)
+- `apps/site-a/src/app/(site)/products/[slug]/page.tsx`
+- `apps/site-a/src/app/(site)/contact/page.tsx`
+- `apps/site-a/src/components/content/product-card.tsx`
+- `apps/site-a/src/components/site/contact-form.tsx`
+
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `5d25a41` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
