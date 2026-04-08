@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site Factory + Content Pipeline — AI 自动化建站与内容系统完整工作流</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400;1,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ═══ MAGAZINE-SPREAD PRESET ═══ */
+:root {
+  --bg: #FEFEFE;
+  --text: #1E1E1E;
+  --text-2: #555555;
+  --text-3: #888888;
+  --accent: #C41E3A;
+  --accent-light: rgba(196,30,58,0.08);
+  --accent-dark: #9A1830;
+  --pullquote: #2C3E50;
+  --surface: #F7F5F2;
+  --border: #E8E4DF;
+  --blue: #2563EB;
+  --green: #16A34A;
+  --amber: #D97706;
+  --violet: #7C3AED;
+  --emerald: #059669;
+  --rose: #E11D48;
+  --font-display: 'Newsreader', 'Georgia', serif;
+  --font-body: 'Source Serif 4', 'Merriweather', serif;
+  --font-caption: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --max-w: 1200px;
+  --gutter: 40px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══ MASTHEAD ═══ */
+.masthead {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 24px var(--gutter);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 3px double var(--text);
+  font-family: var(--font-caption);
+}
+.masthead-title {
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--accent);
+}
+.masthead-date {
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ═══ HERO ═══ */
+.hero {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 80px var(--gutter) 60px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-kicker {
+  font-family: var(--font-caption);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  max-width: 900px;
+  margin-bottom: 24px;
+}
+.hero h1 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+.hero-deck {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-2);
+  max-width: 700px;
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+.hero-meta {
+  font-family: var(--font-caption);
+  font-size: 13px;
+  color: var(--text-3);
+  display: flex;
+  gap: 24px;
+}
+.hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+/* ═══ TOC ═══ */
+.toc-bar {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 28px var(--gutter);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  font-family: var(--font-caption);
+}
+.toc-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-right: 24px;
+  padding-top: 2px;
+}
+.toc-bar a {
+  font-size: 13px;
+  color: var(--text-2);
+  text-decoration: none;
+  padding: 4px 14px;
+  border-right: 1px solid var(--border);
+  transition: color 0.2s;
+}
+.toc-bar a:last-child { border-right: none; }
+.toc-bar a:hover { color: var(--accent); }
+
+/* ═══ MAIN CONTENT ═══ */
+.content {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ═══ SECTION ═══ */
+.section {
+  padding: 72px 0;
+  border-bottom: 1px solid var(--border);
+}
+.section:last-child { border-bottom: none; }
+
+.section-num {
+  font-family: var(--font-display);
+  font-size: 120px;
+  font-weight: 800;
+  color: rgba(196,30,58,0.06);
+  line-height: 1;
+  margin-bottom: -30px;
+  position: relative;
+  z-index: 0;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+.section-subtitle {
+  font-family: var(--font-caption);
+  font-size: 14px;
+  color: var(--text-3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 36px;
+}
+
+/* ═══ COLUMNS ═══ */
+.cols-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gutter);
+  margin: 28px 0;
+}
+.cols-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 24px;
+  margin: 28px 0;
+}
+.cols-sidebar {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--gutter);
+  margin: 28px 0;
+}
+@media (max-width: 800px) {
+  .cols-2, .cols-3, .cols-sidebar { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 36px; }
+  .hero { padding: 48px 20px 36px; }
+  .content { padding: 0 20px; }
+  .section-num { font-size: 72px; }
+  .flow-diagram { font-size: 12px; }
+}
+
+/* ═══ DROP CAP ═══ */
+.drop-cap::first-letter {
+  font-family: var(--font-display);
+  float: left;
+  font-size: 76px;
+  font-weight: 800;
+  line-height: 0.8;
+  margin: 4px 12px 0 0;
+  color: var(--accent);
+}
+
+/* ═══ PULLQUOTE ═══ */
+.pullquote {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--pullquote);
+  line-height: 1.4;
+  padding: 32px 0;
+  margin: 36px 0;
+  border-top: 3px solid var(--accent);
+  border-bottom: 1px solid var(--border);
+}
+.pullquote cite {
+  display: block;
+  font-family: var(--font-caption);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+
+/* ═══ CARD ═══ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 24px 28px;
+  margin: 16px 0;
+}
+.card-accent {
+  border-left: 4px solid var(--accent);
+  background: var(--accent-light);
+}
+.card-label {
+  font-family: var(--font-caption);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+/* ═══ FLOW DIAGRAM ═══ */
+.flow-diagram {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 32px;
+  margin: 28px 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.9;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--text);
+}
+.flow-diagram .hl { color: var(--accent); font-weight: 700; }
+.flow-diagram .g { color: var(--green); }
+.flow-diagram .b { color: var(--blue); }
+.flow-diagram .v { color: var(--violet); }
+.flow-diagram .a { color: var(--amber); }
+.flow-diagram .dim { color: var(--text-3); }
+
+/* ═══ PHASE BLOCK ═══ */
+.phase {
+  margin: 40px 0;
+  padding: 32px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  position: relative;
+}
+.phase::before {
+  content: attr(data-phase);
+  position: absolute;
+  top: -12px;
+  left: 28px;
+  font-family: var(--font-caption);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--accent);
+  padding: 2px 14px;
+  border-radius: 2px;
+}
+.phase h3 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  margin-top: 8px;
+}
+.phase .time {
+  font-family: var(--font-caption);
+  font-size: 12px;
+  color: var(--text-3);
+  margin-bottom: 16px;
+}
+.phase p, .phase li {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.7;
+}
+.phase ul { padding-left: 18px; margin: 8px 0; }
+.phase li { margin: 4px 0; }
+
+/* ═══ STEP ═══ */
+.step {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 16px;
+  margin: 20px 0;
+  align-items: start;
+}
+.step-num-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.step-content h4 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.step-content p {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+/* ═══ TABLE ═══ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14px;
+  font-family: var(--font-caption);
+}
+th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  border-bottom: 2px solid var(--text);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  color: var(--text-2);
+}
+tr:hover td { background: var(--accent-light); }
+td strong { color: var(--text); }
+
+/* ═══ CODE ═══ */
+code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1px 7px;
+  border-radius: 3px;
+  color: var(--accent-dark);
+}
+pre {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: #1E1E1E;
+  color: #D4D4D4;
+  border-radius: 4px;
+  padding: 20px 24px;
+  overflow-x: auto;
+  line-height: 1.7;
+  margin: 16px 0;
+}
+pre .cm { color: #6A9955; }
+pre .kw { color: #C586C0; }
+pre .fn { color: #DCDCAA; }
+pre .str { color: #CE9178; }
+pre .num { color: #B5CEA8; }
+pre .type { color: #4EC9B0; }
+
+/* ═══ TAG ═══ */
+.tag {
+  display: inline-block;
+  font-family: var(--font-caption);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 3px;
+  margin: 2px 4px 2px 0;
+}
+.tag-red { background: rgba(196,30,58,0.1); color: var(--accent); }
+.tag-blue { background: rgba(37,99,235,0.08); color: var(--blue); }
+.tag-green { background: rgba(22,163,74,0.08); color: var(--green); }
+.tag-amber { background: rgba(217,119,6,0.08); color: var(--amber); }
+.tag-violet { background: rgba(124,58,237,0.08); color: var(--violet); }
+
+/* ═══ DIVIDER ═══ */
+.divider {
+  text-align: center;
+  margin: 48px 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--border);
+  letter-spacing: 12px;
+}
+
+/* ═══ CHECKLIST ═══ */
+.checklist { list-style: none; padding: 0; }
+.checklist li {
+  padding: 6px 0 6px 28px;
+  position: relative;
+  font-size: 15px;
+  color: var(--text-2);
+}
+.checklist li::before {
+  content: '□';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: 16px;
+}
+
+/* ═══ TIMELINE ═══ */
+.timeline { position: relative; padding-left: 32px; margin: 24px 0; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.tl-item {
+  position: relative;
+  margin-bottom: 28px;
+}
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: -27px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+.tl-item h4 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.tl-item .tl-time {
+  font-family: var(--font-caption);
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.tl-item p { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+
+/* ═══ SCORE ═══ */
+.score-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+  font-family: var(--font-caption);
+  font-size: 13px;
+}
+.score-label { width: 200px; color: var(--text-2); flex-shrink: 0; }
+.score-bar-bg { flex: 1; height: 6px; background: var(--border); border-radius: 3px; }
+.score-bar { height: 6px; border-radius: 3px; background: var(--accent); }
+.score-val { width: 36px; text-align: right; font-weight: 700; color: var(--accent); }
+
+/* ═══ FOOTER ═══ */
+footer {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 40px var(--gutter);
+  border-top: 3px double var(--text);
+  text-align: center;
+  font-family: var(--font-caption);
+  font-size: 13px;
+  color: var(--text-3);
+}
+footer .sig { color: var(--accent); font-weight: 600; margin-top: 6px; }
+
+/* ═══ ANIMATION ═══ */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-title">Site Factory Playbook</div>
+  <div class="masthead-date">2026 年 4 月 · 第 1 版</div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">AI 自动化建站与内容系统</div>
+  <h1>Site Factory + <em>Content Pipeline</em><br>完整工作流手册</h1>
+  <p class="hero-deck">
+    一套代码造 N 个站，一个管道灌所有内容。<br>
+    从零到上线 2 小时，从上线到 100 篇 SEO 文章 1 周。
+  </p>
+  <div class="hero-meta">
+    <span>技术栈：Next.js + Sanity + Vercel</span>
+    <span>执行者：Claude Code</span>
+    <span>决策者：你</span>
+  </div>
+</div>
+
+<!-- TOC -->
+<nav class="toc-bar">
+  <span class="toc-label">目录</span>
+  <a href="#s1">系统全景</a>
+  <a href="#s2">技术栈选型</a>
+  <a href="#s3">Phase 1 · 基座</a>
+  <a href="#s4">Phase 2 · 内容管道</a>
+  <a href="#s5">Phase 3 · 矩阵扩展</a>
+  <a href="#s6">Phase 4 · SEO 闭环</a>
+  <a href="#s7">日常运营节奏</a>
+  <a href="#s8">成本与风险</a>
+  <a href="#s9">学习路径</a>
+  <a href="#hiring">人才杠杆</a>
+  <a href="#learning">从零学习手册</a>
+</nav>
+
+<main class="content">
+
+<!-- ═══════════════════════════════════════ S1 ═══ -->
+<section class="section" id="s1">
+  <div class="section-num">01</div>
+  <h2 class="section-title">系统全景 — 一张图看全貌</h2>
+  <p class="section-subtitle">ARCHITECTURE OVERVIEW</p>
+
+  <p class="drop-cap">这不是在做一个网站。这是在造一台<strong>造站机器</strong>——输入一份 config，输出一个完整的、带 SEO 内容引擎的网站。第一个站可能需要 2-3 天搭基座，但第二个站只需要 2 小时，第十个站只需要 30 分钟。</p>
+
+  <div class="flow-diagram">
+<span class="dim">┌─────────────────────────────────────────────────────────────────────┐</span>
+<span class="dim">│</span>                        <span class="hl">SITE FACTORY 系统全景</span>                         <span class="dim">│</span>
+<span class="dim">├─────────────────────────────────────────────────────────────────────┤</span>
+<span class="dim">│</span>                                                                     <span class="dim">│</span>
+<span class="dim">│</span>   <span class="b">你（决策层）</span>                                                    <span class="dim">│</span>
+<span class="dim">│</span>     │  选品类 · 选域名 · 审内容 · 看数据                              <span class="dim">│</span>
+<span class="dim">│</span>     ▼                                                               <span class="dim">│</span>
+<span class="dim">│</span>   <span class="hl">Claude Code（执行引擎）</span>                                         <span class="dim">│</span>
+<span class="dim">│</span>     │                                                               <span class="dim">│</span>
+<span class="dim">│</span>     ├──→ <span class="g">建站</span>：读 config → 生成 Next.js 页面 → 部署 Vercel          <span class="dim">│</span>
+<span class="dim">│</span>     ├──→ <span class="g">内容</span>：关键词研究 → 写文章 → 推 Sanity CMS → 自动上线       <span class="dim">│</span>
+<span class="dim">│</span>     ├──→ <span class="g">产品</span>：CSV/API 数据 → 批量生成产品页 → 自动部署              <span class="dim">│</span>
+<span class="dim">│</span>     └──→ <span class="g">优化</span>：GSC 数据 → 找低垂果实 → 生成针对性内容               <span class="dim">│</span>
+<span class="dim">│</span>                                                                     <span class="dim">│</span>
+<span class="dim">│</span>   <span class="v">数据层</span>                    <span class="a">部署层</span>                                <span class="dim">│</span>
+<span class="dim">│</span>   ┌─────────────┐          ┌──────────────┐                         <span class="dim">│</span>
+<span class="dim">│</span>   │ Sanity CMS   │ ←──────→ │ Vercel       │                         <span class="dim">│</span>
+<span class="dim">│</span>   │ · 博客文章   │          │ · 自动部署    │                         <span class="dim">│</span>
+<span class="dim">│</span>   │ · 产品数据   │          │ · CDN 加速    │                         <span class="dim">│</span>
+<span class="dim">│</span>   │ · 页面配置   │          │ · 预览/生产   │                         <span class="dim">│</span>
+<span class="dim">│</span>   └─────────────┘          └──────────────┘                         <span class="dim">│</span>
+<span class="dim">│</span>          ↑                        ↑                                 <span class="dim">│</span>
+<span class="dim">│</span>          │                   git push = 上线                          <span class="dim">│</span>
+<span class="dim">│</span>          │                        ↑                                 <span class="dim">│</span>
+<span class="dim">│</span>   ┌──────┴──────────────────────┐│                                  <span class="dim">│</span>
+<span class="dim">│</span>   │       <span class="hl">Next.js Monorepo</span>       ││                                  <span class="dim">│</span>
+<span class="dim">│</span>   │  ┌────────┐ ┌────────┐     ││                                  <span class="dim">│</span>
+<span class="dim">│</span>   │  │ 站点 A │ │ 站点 B │ ... ├┘                                  <span class="dim">│</span>
+<span class="dim">│</span>   │  │config-a│ │config-b│     │                                   <span class="dim">│</span>
+<span class="dim">│</span>   │  └────────┘ └────────┘     │                                   <span class="dim">│</span>
+<span class="dim">│</span>   │     共享：模板/组件/SEO逻辑  │                                   <span class="dim">│</span>
+<span class="dim">│</span>   └─────────────────────────────┘                                   <span class="dim">│</span>
+<span class="dim">│</span>                                                                     <span class="dim">│</span>
+<span class="dim">└─────────────────────────────────────────────────────────────────────┘</span>
+  </div>
+
+  <div class="pullquote">
+    不是精耕一块地，而是撒十颗种子看哪颗发芽。<br>
+    发芽的那颗，再浇十倍的水。
+    <cite>— Site Factory 核心逻辑</cite>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ S2 ═══ -->
+<section class="section" id="s2">
+  <div class="section-num">02</div>
+  <h2 class="section-title">技术栈选型 — 为什么是这三件套</h2>
+  <p class="section-subtitle">TECH STACK DECISION</p>
+
+  <div class="cols-3">
+    <div class="card">
+      <div class="card-label">前端 + 路由 + SSG</div>
+      <h3 style="font-family:var(--font-display);font-size:24px;margin-bottom:8px;">Next.js</h3>
+      <p style="font-size:15px;color:var(--text-2);">React 框架，Vercel 亲儿子。SSG（静态生成）让每个页面都是预渲染 HTML——对 SEO 来说是最优解。ISR（增量静态再生）让你更新内容时不需要重新构建整个站。</p>
+      <div style="margin-top:12px;">
+        <span class="tag tag-green">SSG/ISR</span>
+        <span class="tag tag-green">动态路由</span>
+        <span class="tag tag-green">API Routes</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">内容管理</div>
+      <h3 style="font-family:var(--font-display);font-size:24px;margin-bottom:8px;">Sanity CMS</h3>
+      <p style="font-size:15px;color:var(--text-2);">Headless CMS，内容和前端完全分离。Claude 通过 API 直接写入内容，不需要打开任何后台界面。免费额度：2 个 dataset + 100K API 请求/月，够用。</p>
+      <div style="margin-top:12px;">
+        <span class="tag tag-blue">API 写入</span>
+        <span class="tag tag-blue">实时预览</span>
+        <span class="tag tag-blue">免费额度大</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">部署 + CDN</div>
+      <h3 style="font-family:var(--font-display);font-size:24px;margin-bottom:8px;">Vercel</h3>
+      <p style="font-size:15px;color:var(--text-2);">Git push = 上线。全球 CDN，自动 HTTPS，预览部署。Next.js 的原生平台，零配置。免费额度：100GB 带宽/月/项目，个人和小流量站完全够。</p>
+      <div style="margin-top:12px;">
+        <span class="tag tag-violet">一键部署</span>
+        <span class="tag tag-violet">全球 CDN</span>
+        <span class="tag tag-violet">预览环境</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-accent card">
+    <div class="card-label">为什么不选其他方案</div>
+    <table>
+      <thead>
+        <tr><th>方案</th><th>淘汰原因</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>WordPress</strong></td><td>学习成本高、插件依赖重、安全维护累。你自己说了"太累了"。</td></tr>
+        <tr><td><strong>Shopify</strong></td><td>B2B 不需要购物车/支付/库存。$39/月/站的成本在矩阵模式下叠加太快。SEO 博客能力弱。</td></tr>
+        <tr><td><strong>Webflow / Framer</strong></td><td>CMS API 限制多，程序化 SEO 批量页面能力不足。Claude 对其代码生成支持不如 Next.js。</td></tr>
+        <tr><td><strong>AI 一键建站</strong></td><td>10Web / Durable 等建站快但 SEO 控制弱，后续自动化接口有限，天花板低。</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:14px;color:var(--text-2);margin-top:12px;"><strong>例外情况</strong>：如果某个客户站真的需要在线支付（B2C/DTC），可以在 Next.js 里接 Shopify Storefront API 或 Stripe，不需要换整套架构。</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ S3 ═══ -->
+<section class="section" id="s3">
+  <div class="section-num">03</div>
+  <h2 class="section-title">Phase 1 · 搭基座</h2>
+  <p class="section-subtitle">BUILD THE FOUNDATION — 预计 2-3 天</p>
+
+  <p>这是一次性投入。搭好之后，后续每个新站都是 clone + 改 config。</p>
+
+  <div class="phase" data-phase="STEP 1">
+    <h3>项目初始化</h3>
+    <div class="time">Claude 执行 · 30 分钟</div>
+    <pre><code><span class="cm"># Claude Code 执行以下命令</span>
+<span class="fn">npx</span> create-next-app@latest site-factory <span class="str">--typescript --tailwind --app --src-dir</span>
+<span class="kw">cd</span> site-factory
+<span class="fn">npm</span> install @sanity/client @sanity/image-url next-sanity next-sitemap
+<span class="fn">npx</span> sanity@latest init <span class="str">--project-id YOUR_ID --dataset production</span></code></pre>
+    <p>你只需要做一件事：<strong>去 sanity.io 注册账号，拿到 project ID 和 API token</strong>。其余全是 Claude 的活。</p>
+  </div>
+
+  <div class="phase" data-phase="STEP 2">
+    <h3>Config 驱动架构</h3>
+    <div class="time">Claude 执行 · 2 小时</div>
+    <p>每个站的所有差异都集中在一份 config 文件里：</p>
+    <pre><code><span class="cm">// site.config.ts — 这就是"换一个站"需要改的全部内容</span>
+<span class="kw">export const</span> siteConfig = {
+  <span class="cm">// 基础信息</span>
+  name: <span class="str">"Solar Panel Pro"</span>,
+  domain: <span class="str">"solarpanelpro.com"</span>,
+  locale: <span class="str">"en-US"</span>,
+
+  <span class="cm">// 品牌</span>
+  logo: <span class="str">"/logo.svg"</span>,
+  colors: { primary: <span class="str">"#1E40AF"</span>, accent: <span class="str">"#F59E0B"</span> },
+
+  <span class="cm">// 业务类型 — 决定页面结构</span>
+  type: <span class="str">"b2b-product"</span>,  <span class="cm">// b2b-product | b2b-service | b2c-dtc</span>
+
+  <span class="cm">// SEO</span>
+  defaultMeta: {
+    titleTemplate: <span class="str">"%s | Solar Panel Pro"</span>,
+    description: <span class="str">"Premium solar panels for commercial installations"</span>,
+  },
+
+  <span class="cm">// 联系方式 / CTA</span>
+  cta: { text: <span class="str">"Request Quote"</span>, type: <span class="str">"form"</span> }, <span class="cm">// form | email | whatsapp</span>
+
+  <span class="cm">// 内容管道配置</span>
+  content: {
+    sanityDataset: <span class="str">"solar-prod"</span>,
+    blogEnabled: <span class="kw">true</span>,
+    productsEnabled: <span class="kw">true</span>,
+    autoPublish: <span class="kw">false</span>,  <span class="cm">// true = 免审直接发，false = 草稿等你审</span>
+  },
+
+  <span class="cm">// 导航</span>
+  nav: [
+    { label: <span class="str">"Products"</span>, href: <span class="str">"/products"</span> },
+    { label: <span class="str">"Blog"</span>, href: <span class="str">"/blog"</span> },
+    { label: <span class="str">"About"</span>, href: <span class="str">"/about"</span> },
+    { label: <span class="str">"Contact"</span>, href: <span class="str">"/contact"</span> },
+  ],
+}</code></pre>
+  </div>
+
+  <div class="phase" data-phase="STEP 3">
+    <h3>模板页面搭建</h3>
+    <div class="time">Claude 执行 · 4-6 小时 · 你审核设计</div>
+    <p>Claude 生成以下页面模板，每个都自适应 config 中的 <code>type</code> 字段：</p>
+    <div class="cols-2">
+      <div>
+        <h4 style="font-family:var(--font-display);">通用页面</h4>
+        <ul class="checklist">
+          <li>首页（Hero + 价值主张 + CTA）</li>
+          <li>关于页（公司故事 + 团队）</li>
+          <li>联系页（表单 + 地图）</li>
+          <li>404 页</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:var(--font-display);">动态页面</h4>
+        <ul class="checklist">
+          <li>博客列表页 <code>/blog</code></li>
+          <li>博客详情页 <code>/blog/[slug]</code></li>
+          <li>产品列表页 <code>/products</code></li>
+          <li>产品详情页 <code>/products/[slug]</code></li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:14px;color:var(--text-3);">你的决策点：审核首页设计稿，确认风格和布局。Claude 会出 2-3 个变体让你选。</p>
+  </div>
+
+  <div class="phase" data-phase="STEP 4">
+    <h3>SEO 基建</h3>
+    <div class="time">Claude 执行 · 1-2 小时</div>
+    <ul>
+      <li><strong>自动 sitemap</strong>：<code>next-sitemap</code> 每次构建自动生成</li>
+      <li><strong>结构化数据</strong>：JSON-LD（Organization + Product + Article + BreadcrumbList + FAQ）</li>
+      <li><strong>Meta 标签</strong>：每页自动生成 title / description / Open Graph / Twitter Card</li>
+      <li><strong>robots.txt</strong>：自动生成</li>
+      <li><strong>内链系统</strong>：博客文章自动链接到相关产品页，产品页自动链接到相关博客</li>
+      <li><strong>Answer-First 模板</strong>：博客文章结构强制 H2 问题 → 直接答案 → 展开内容（Brandon Leibowitz 的方法）</li>
+    </ul>
+  </div>
+
+  <div class="phase" data-phase="STEP 5">
+    <h3>部署上线</h3>
+    <div class="time">Claude 执行 · 15 分钟</div>
+    <pre><code><span class="cm"># 连接 Vercel</span>
+<span class="fn">npx</span> vercel link
+<span class="fn">npx</span> vercel <span class="str">--prod</span>
+<span class="cm"># 绑定域名（在 Vercel Dashboard 或 CLI）</span>
+<span class="fn">npx</span> vercel domains add solarpanelpro.com</code></pre>
+    <p>完成。你的站现在在线了，全球 CDN，HTTPS 自动配好。</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ S4 ═══ -->
+<section class="section" id="s4">
+  <div class="section-num">04</div>
+  <h2 class="section-title">Phase 2 · 内容管道</h2>
+  <p class="section-subtitle">CONTENT PIPELINE — 站建好了，开始灌内容</p>
+
+  <p class="drop-cap">这是整个系统的核心价值。站本身没什么难的——真正的护城河是后面的自动化内容生产。每周 Claude 帮你做两件事：写博客、更新产品页。你只负责审核。</p>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <h3 style="font-family:var(--font-display);font-size:24px;margin-bottom:24px;">博客内容管道</h3>
+
+  <div class="flow-diagram">
+<span class="hl">博客内容自动化全流程</span>
+
+<span class="dim">Phase A: 关键词研究（Claude 执行）</span>
+┌──────────────────┐     ┌──────────────────┐     ┌──────────────────┐
+│  <span class="b">竞品分析</span>         │     │  <span class="b">GSC 低垂果实</span>    │     │  <span class="b">行业长尾词</span>      │
+│  抓竞品博客目录    │────→│  排名 3-20 的词   │────→│  底部漏斗意图词   │
+│  找内容 gap       │     │  差临门一脚       │     │  Profit Matrix   │
+└──────────────────┘     └──────────────────┘     └──────────────────┘
+         │                        │                        │
+         └────────────────────────┼────────────────────────┘
+                                  ▼
+                    ┌──────────────────────────┐
+                    │  <span class="hl">关键词优先级排序</span>         │
+                    │  搜索量 × 买家意图 × 竞争度│
+                    │  输出：本周 5-10 个选题     │
+                    └──────────────────────────┘
+                                  │
+                          <span class="g">★ 你审核选题 ★</span>
+                                  │
+                                  ▼
+<span class="dim">Phase B: 内容生成（Claude 执行）</span>
+                    ┌──────────────────────────┐
+                    │  <span class="v">按 Answer-First 模板写</span>   │
+                    │  H2 问题 → 直接答案       │
+                    │  → 展开内容 → FAQ → CTA   │
+                    │  含：meta / alt text /     │
+                    │  内链 / 外链 / 结构化数据  │
+                    └──────────────────────────┘
+                                  │
+                          <span class="g">★ 你审核内容 ★</span>
+                                  │
+                                  ▼
+<span class="dim">Phase C: 发布（Claude 自动）</span>
+                    ┌──────────────────────────┐
+                    │  <span class="a">Sanity API 写入</span>          │
+                    │  → Webhook 触发 Vercel    │
+                    │  → ISR 增量更新           │
+                    │  → 页面上线（< 60秒）      │
+                    └──────────────────────────┘
+                                  │
+                                  ▼
+<span class="dim">Phase D: 分发（可选，后续扩展）</span>
+                    ┌──────────────────────────┐
+                    │  从博客提取 → 社媒帖子     │
+                    │  LinkedIn / X / 小红书     │
+                    └──────────────────────────┘
+  </div>
+
+  <div class="pullquote">
+    追交易，不追流量。<br>只做底部漏斗——"running shoes for pregnant women with sore backs"，<br>不做"running shoes"。
+    <cite>— Profit Matrix 原则（Brandon Leibowitz）</cite>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-size:24px;margin:48px 0 24px;">产品页批量更新</h3>
+
+  <div class="flow-diagram">
+<span class="hl">产品数据 → 产品页 自动化</span>
+
+<span class="b">数据源（任选一个）</span>
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│ CSV / Excel  │  │ 1688 API     │  │ 手动录入     │
+│ 产品表格      │  │ 供应商数据    │  │ Sanity 后台  │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                 │
+       └─────────────────┼─────────────────┘
+                         ▼
+              ┌──────────────────────┐
+              │  <span class="hl">Claude 处理</span>          │
+              │  · 翻译/润色产品描述   │
+              │  · 生成 SEO meta      │
+              │  · 生成 alt text      │
+              │  · 匹配相关博客文章    │
+              │  · 生成结构化数据      │
+              └──────────────────────┘
+                         │
+                 <span class="g">★ 你审核 ★</span>
+                         │
+                         ▼
+              ┌──────────────────────┐
+              │  <span class="a">批量写入 Sanity</span>     │
+              │  → 触发 ISR          │
+              │  → 产品页自动上线     │
+              └──────────────────────┘
+  </div>
+
+  <div class="card-accent card">
+    <div class="card-label">内容质量控制 — 不能全自动</div>
+    <p style="font-size:15px;color:var(--text-2);">铺量阶段也有底线。每篇文章 Claude 生成后，你需要 2-3 分钟扫一眼：</p>
+    <ul style="font-size:14px;color:var(--text-2);padding-left:18px;margin-top:8px;">
+      <li><strong>事实准确性</strong> — AI 编的数据会杀死你的 E-E-A-T 信号</li>
+      <li><strong>去 AI 味</strong> — 用 <code>/humanizer</code> skill 过一遍</li>
+      <li><strong>底部漏斗检查</strong> — 这篇文章的读者真的会买东西吗？</li>
+      <li><strong>内链检查</strong> — 是否链到了 Money Page（产品页/服务页）？</li>
+    </ul>
+    <p style="font-size:14px;color:var(--text-2);margin-top:8px;">当站点稳定后（3 个月+），可以把 <code>autoPublish</code> 设为 <code>true</code>，让信任度高的内容类型免审。</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ S5 ═══ -->
+<section class="section" id="s5">
+  <div class="section-num">05</div>
+  <h2 class="section-title">Phase 3 · 矩阵扩展</h2>
+  <p class="section-subtitle">SCALE TO MULTIPLE SITES — 从 1 个站到 N 个站</p>
+
+  <p class="drop-cap">基座搭好后，扩展新站的流程极其简单。本质上就是 <strong>复制 config → 改品牌信息 → 部署</strong>。以下是两种矩阵模式的操作手册。</p>
+
+  <div class="cols-2">
+    <div class="card">
+      <div class="card-label">模式 A · 同品牌子站</div>
+      <h4 style="font-family:var(--font-display);font-size:18px;">场景</h4>
+      <p style="font-size:14px;color:var(--text-2);">chending.net 主站 + solar.chending.net 太阳能板 + tools.chending.net 工具站</p>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin-top:16px;">操作</h4>
+      <ul style="font-size:14px;color:var(--text-2);padding-left:18px;">
+        <li>同一个 Git 仓库，不同的 Vercel 项目</li>
+        <li>共享设计系统，换 config 里的颜色/logo/导航</li>
+        <li>Sanity 同一个 project 下开不同 dataset</li>
+        <li>主站做权重集中，子站做长尾覆盖</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label">模式 B · 多品牌矩阵</div>
+      <h4 style="font-family:var(--font-display);font-size:18px;">场景</h4>
+      <p style="font-size:14px;color:var(--text-2);">完全独立域名：solarpanelpro.com + rvparts.com + 客户站 xyz.com</p>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin-top:16px;">操作</h4>
+      <ul style="font-size:14px;color:var(--text-2);padding-left:18px;">
+        <li>同一个 Git 仓库（Monorepo），每个站是一个 app</li>
+        <li>各自独立的域名/品牌/设计</li>
+        <li>Sanity 独立 dataset，数据完全隔离</li>
+        <li>共享底层组件和 SEO 逻辑</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-size:22px;margin:36px 0 16px;">新站上线 SOP（30 分钟 - 2 小时）</h3>
+
+  <div class="step">
+    <div class="step-num-circle">1</div>
+    <div class="step-content">
+      <h4>你：决定新站</h4>
+      <p>品类、域名、目标市场、CTA 类型。一句话告诉 Claude。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num-circle">2</div>
+    <div class="step-content">
+      <h4>Claude：生成 config</h4>
+      <p>根据你的一句话，生成完整的 <code>site.config.ts</code>，包括品牌色、导航、Meta、CTA 配置。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num-circle">3</div>
+    <div class="step-content">
+      <h4>Claude：创建 Sanity dataset</h4>
+      <p>通过 CLI 创建新的 dataset，配置 schema（如果是新品类可能需要微调 schema）。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num-circle">4</div>
+    <div class="step-content">
+      <h4>Claude：部署到 Vercel</h4>
+      <p><code>vercel deploy --prod</code> + 绑定域名。自动 HTTPS。</p>
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num-circle">5</div>
+    <div class="step-content">
+      <h4>你：审核 → 上线</h4>
+      <p>预览链接看一遍，没问题就是正式站了。然后启动内容管道开始灌博客。</p>
+    </div>
+  </div>
+
+  <div class="card-accent card" style="margin-top:32px;">
+    <div class="card-label">矩阵管理仪表板</div>
+    <p style="font-size:15px;color:var(--text-2);margin-bottom:12px;">所有站的状态在一个地方看：</p>
+    <table>
+      <thead>
+        <tr><th>站点</th><th>状态</th><th>文章数</th><th>月流量</th><th>操作</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>solarpanelpro.com</strong></td><td><span class="tag tag-green">运行中</span></td><td>47</td><td>2,300</td><td>灌内容</td></tr>
+        <tr><td><strong>rvparts.com</strong></td><td><span class="tag tag-green">运行中</span></td><td>23</td><td>890</td><td>灌内容</td></tr>
+        <tr><td><strong>client-xyz.com</strong></td><td><span class="tag tag-amber">建设中</span></td><td>0</td><td>—</td><td>搭建</td></tr>
+        <tr><td><strong>test-idea.com</strong></td><td><span class="tag tag-red">已关闭</span></td><td>15</td><td>12</td><td>已删除</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--text-3);margin-top:8px;">可以在 Vercel Dashboard 原生看到，也可以后续用 Claude 拉 Vercel API + GSC API 自动生成。</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ S6 ═══ -->
+<section class="section" id="s6">
+  <div class="section-num">06</div>
+  <h2 class="section-title">Phase 4 · SEO 闭环</h2>
+  <p class="section-subtitle">FEEDBACK LOOP — 从"灌内容"到"精准灌内容"</p>
+
+  <p>铺量 1-3 个月后，Google Search Console 会告诉你哪些内容有效。这时候从"盲打"切换到"数据驱动"。</p>
+
+  <div class="flow-diagram">
+<span class="hl">SEO 闭环工作流（月度）</span>
+
+  <span class="b">Google Search Console</span>
+          │
+          ▼
+  ┌───────────────────┐
+  │ Claude 分析 GSC   │
+  │ · 哪些词有展示     │
+  │ · 哪些词排 3-20   │──→ <span class="g">低垂果实清单</span>
+  │ · 哪些页 CTR 低   │        │
+  │ · 哪些词你没覆盖   │        │
+  └───────────────────┘        │
+                                ▼
+                    ┌──────────────────────┐
+                    │ <span class="hl">三种行动</span>             │
+                    ├──────────────────────┤
+                    │ <span class="g">A. 新文章</span>             │
+                    │ 发现未覆盖的高意图词   │
+                    │ → 生成新博客          │
+                    ├──────────────────────┤
+                    │ <span class="b">B. 优化旧文章</span>         │
+                    │ 排名 3-20 的词        │
+                    │ → 加内容/加内链/改标题 │
+                    ├──────────────────────┤
+                    │ <span class="v">C. 关闭无效页</span>         │
+                    │ 3 个月零流量的页面     │
+                    │ → noindex 或删除      │
+                    └──────────────────────┘
+                                │
+                        重复每月一次
+  </div>
+
+  <div class="cols-sidebar">
+    <div>
+      <h3 style="font-family:var(--font-display);font-size:20px;margin-bottom:16px;">AI Overview 优化（Answer Engine Optimization）</h3>
+      <p style="font-size:15px;color:var(--text-2);">2026 年的 SEO 不只是 Google 排名——你的内容需要被 AI（ChatGPT / Perplexity / Google AI Overview）引用。这就是 Brandon Leibowitz 的 <strong>Answer-First Method</strong> 的价值所在：</p>
+      <ul style="font-size:14px;color:var(--text-2);padding-left:18px;margin-top:8px;">
+        <li>每个 H2 写成问题形式</li>
+        <li>H2 下面第一句就是直接答案</li>
+        <li>答案脱离上下文也能独立理解</li>
+        <li>FAQ 区域放在文章底部</li>
+        <li>结构化数据标记 FAQPage schema</li>
+      </ul>
+      <p style="font-size:14px;color:var(--text-2);margin-top:12px;">这套结构在博客模板里已经固化了，每篇文章自动遵循。</p>
+    </div>
+    <div class="card" style="align-self:start;">
+      <div class="card-label">内链策略</div>
+      <p style="font-size:14px;color:var(--text-2);">每篇博客自动执行：</p>
+      <ul style="font-size:13px;color:var(--text-2);padding-left:16px;margin-top:8px;">
+        <li>→ 链接到 1-2 个产品页</li>
+        <li>→ 链接到 2-3 篇相关博客</li>
+        <li>→ 从产品页反向链接</li>
+        <li>→ 形成 Pillar-Cluster 结构</li>
+      </ul>
+      <p style="font-size:12px;color:var(--text-3);margin-top:12px;">Claude 在写文章时自动查询现有内容，生成相关内链。不需要手动。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ S7 ═══ -->
+<section class="section" id="s7">
+  <div class="section-num">07</div>
+  <h2 class="section-title">日常运营节奏</h2>
+  <p class="section-subtitle">WEEKLY ROUTINE — 你每周实际花多少时间</p>
+
+  <p class="drop-cap">系统跑起来后，你的时间主要花在"看数据"和"做决策"上，不是"做事"上。以下是推荐的周节奏。</p>
+
+  <div class="cols-2">
+    <div class="card">
+      <div class="card-label">周一 · 内容日（1-2 小时）</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-time">0:00 - 0:15</div>
+          <h4>Claude 跑关键词研究</h4>
+          <p>分析竞品更新 + GSC 数据 → 输出本周选题列表</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:15 - 0:30</div>
+          <h4>你审核选题</h4>
+          <p>选 5-10 个题目，删掉不对的，可能加几个你知道的行业题目</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:30 - 1:00</div>
+          <h4>Claude 批量生成文章</h4>
+          <p>5-10 篇 Answer-First 格式博客，含全套 SEO 元素</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">1:00 - 1:30</div>
+          <h4>你快速审核</h4>
+          <p>每篇 2-3 分钟扫一遍，改明显错误，确认发布</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">1:30 - 1:45</div>
+          <h4>Claude 发布</h4>
+          <p>推送到 Sanity → 自动上线</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">周四 · 数据日（30 分钟）</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-time">0:00 - 0:10</div>
+          <h4>Claude 拉 GSC + Analytics 数据</h4>
+          <p>流量趋势、新关键词、排名变化</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:10 - 0:20</div>
+          <h4>你看数据做决策</h4>
+          <p>哪个站有起色？加注。哪个站没动静？考虑调整或关闭。</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:20 - 0:30</div>
+          <h4>产品页更新（如需）</h4>
+          <p>新产品数据 → Claude 处理 → 推送上线</p>
+        </div>
+      </div>
+      <div style="margin-top:24px;padding:16px;background:var(--accent-light);border-radius:4px;">
+        <p style="font-size:14px;color:var(--text);"><strong>月度：</strong>每月第一个周四做一次完整的 SEO 闭环分析（Phase 4），输出月报 + 下月内容策略调整。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    你的时间分配：70% 看数据做决策，20% 审核内容，10% 给 Claude 指令。<br>
+    不写代码，不改设计，不碰后台。
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ S8 ═══ -->
+<section class="section" id="s8">
+  <div class="section-num">08</div>
+  <h2 class="section-title">成本与风险</h2>
+  <p class="section-subtitle">COST STRUCTURE & RISK MITIGATION</p>
+
+  <div class="cols-2">
+    <div>
+      <h3 style="font-family:var(--font-display);font-size:20px;margin-bottom:16px;">月度成本（每个站）</h3>
+      <table>
+        <thead><tr><th>项目</th><th>费用</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Vercel</strong></td><td>$0</td><td>Free tier（100GB/月）</td></tr>
+          <tr><td><strong>Sanity CMS</strong></td><td>$0</td><td>Free tier（100K API/月）</td></tr>
+          <tr><td><strong>域名</strong></td><td>$1-12/年</td><td>Namecheap / Cloudflare</td></tr>
+          <tr><td><strong>Claude API</strong></td><td>$5-20</td><td>内容生成（按量计费）</td></tr>
+          <tr><td><strong>GSC / GA4</strong></td><td>$0</td><td>Google 免费</td></tr>
+          <tr><td style="border-top:2px solid var(--accent);"><strong>总计</strong></td><td style="border-top:2px solid var(--accent);"><strong>$5-20/月</strong></td><td style="border-top:2px solid var(--accent);">每个站</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--text-3);margin-top:8px;">10 个站矩阵：$50-200/月，远低于一个 WordPress 主机 + 插件的费用。</p>
+    </div>
+
+    <div>
+      <h3 style="font-family:var(--font-display);font-size:20px;margin-bottom:16px;">风险与对策</h3>
+      <table>
+        <thead><tr><th>风险</th><th>对策</th></tr></thead>
+        <tbody>
+          <tr><td><strong>AI 内容被 Google 惩罚</strong></td><td>Answer-First 结构 + humanizer + 你的行业经验审核 = E-E-A-T 信号</td></tr>
+          <tr><td><strong>Vercel 免费额度不够</strong></td><td>单站流量到 10 万/月才会超。到那时候这个站已经在赚钱了。</td></tr>
+          <tr><td><strong>Sanity 免费额度不够</strong></td><td>每站独立 project，各自 100K 请求。API 调用量大后升级 $99/月。</td></tr>
+          <tr><td><strong>技术栈学习成本</strong></td><td>你不需要学 — Claude 写代码。你学的是"给 Claude 下指令"。</td></tr>
+          <tr><td><strong>某个站不起量</strong></td><td>3 个月没流量 → Vercel 删除项目，30 秒关站，成本归零。</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ S9 ═══ -->
+<section class="section" id="s9">
+  <div class="section-num">09</div>
+  <h2 class="section-title">学习路径</h2>
+  <p class="section-subtitle">LEARNING PATH — 你需要研究的人和资源</p>
+
+  <p>你不需要从零学所有东西。以下是按优先级排列的学习资源，每个都有你已经整理好的笔记。</p>
+
+  <div class="phase" data-phase="PRIORITY 1 · 立即学">
+    <h3>Olivier Croguy — Claude + Shopify 落地页实战</h3>
+    <div class="time">你已有的笔记：guide-olivier-croguy-claude-shopify-playbook-2026-03-31.html</div>
+    <p><strong>学什么</strong>：他的 Claude Code 项目文件夹结构 + Skill 写法 + 逐 section 构建页面的方法论。虽然他用 Shopify，但<strong>项目管理方法和 Claude 使用技巧</strong>直接迁移到 Next.js。</p>
+    <p><strong>关键概念</strong>：永远不要让 Claude 一次输出完整页面 → 逐 section 构建 → 每个 section 出 2-3 个变体 → 你选。</p>
+  </div>
+
+  <div class="phase" data-phase="PRIORITY 2 · 本周学">
+    <h3>Cody Schneider — GTM Engineering + 程序化 SEO</h3>
+    <div class="time">你已有的笔记：guide-cody-schneider-gtm-engineering-claude-2026-03-27.html</div>
+    <p><strong>学什么</strong>：7 Agent 并行架构（先从 1 个 Agent 开始）、Draft Horse AI 的程序化 SEO 逻辑、Paid Ads Command Center 开源代码。</p>
+    <p><strong>关键概念</strong>：Claude Code Agent 从创意直接到发布，中间 5 个人工环节全部消除。</p>
+  </div>
+
+  <div class="phase" data-phase="PRIORITY 3 · 本月学">
+    <h3>Steipete — Content Pipeline + Claude 高级用法</h3>
+    <div class="time">你已有的笔记：guide-steipete-openclaw-complete-2026-03-30.html + prompt-philosophy</div>
+    <p><strong>学什么</strong>：Content Pipeline 的完整实现（Prompt #30）、"Just Talk To It" 哲学（不要过度工程化 prompt）、爆炸半径思维（每次改动评估影响范围）。</p>
+    <p><strong>关键概念</strong>：好的模型会自己读代码库，不需要你手把手指导。截图是杀手锏。</p>
+  </div>
+
+  <div class="phase" data-phase="PRIORITY 4 · 按需学">
+    <h3>Brandon Leibowitz — SEO 内容方法论</h3>
+    <div class="time">你已有的笔记：本次对话整理的 10 个要点</div>
+    <p><strong>学什么</strong>：两个核心概念已经够了 — Profit Matrix（只做底部漏斗）+ Answer-First Method（让 AI 引用你的内容）。这两个概念已经固化在博客模板里了。</p>
+    <p><strong>不需要深入</strong>：他的工具栈（Arvo / Blotato）对你没用，你有更好的方案。</p>
+  </div>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <h3 style="font-family:var(--font-display);font-size:24px;margin-bottom:24px;">30 天行动计划</h3>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">第 1-3 天</div>
+      <h4>搭基座</h4>
+      <p>Claude 初始化项目 → 你注册 Sanity/Vercel → Claude 搭模板 → 第一个站上线</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">第 4-7 天</div>
+      <h4>跑通内容管道</h4>
+      <p>第一批 10 篇 SEO 博客生成 → 你审核 → 发布。确认整个管道从关键词到上线全通。</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">第 2 周</div>
+      <h4>铺量 + 第二个站</h4>
+      <p>第一个站持续灌内容（每天 2-3 篇）。同时 clone 出第二个站（不同品类），验证矩阵模式。</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">第 3 周</div>
+      <h4>产品页 + 内链系统</h4>
+      <p>产品数据导入 → 批量生成产品页 → 博客和产品页互相链接 → Pillar-Cluster 结构成型。</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">第 4 周</div>
+      <h4>数据回收 + 决策</h4>
+      <p>接 GSC → 看第一批内容表现 → 哪些词有展示 → 下月内容策略调整。关掉没效果的实验站。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ APPENDIX ═══ -->
+<section class="section" id="appendix">
+  <div class="section-num">A</div>
+  <h2 class="section-title">附录 · Claude Code Skill 规划</h2>
+  <p class="section-subtitle">SKILLS TO BUILD — 让 Claude 更好地执行</p>
+
+  <p>以下是为这个系统量身定制的 Claude Code Skills。每个 Skill 封装一个可重复的工作流，你只需要一句话触发。</p>
+
+  <table>
+    <thead>
+      <tr><th>Skill 名称</th><th>触发方式</th><th>功能</th><th>优先级</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong><code>/site-new</code></strong></td>
+        <td>"建新站 [品类]"</td>
+        <td>读 config 模板 → 你回答 5 个问题 → 生成 config → 部署到 Vercel</td>
+        <td><span class="tag tag-red">P0</span></td>
+      </tr>
+      <tr>
+        <td><strong><code>/content-batch</code></strong></td>
+        <td>"灌内容 [站名]"</td>
+        <td>关键词研究 → 你审选题 → 批量生成 → 你审内容 → 发布到 Sanity</td>
+        <td><span class="tag tag-red">P0</span></td>
+      </tr>
+      <tr>
+        <td><strong><code>/product-import</code></strong></td>
+        <td>"导入产品 [CSV路径]"</td>
+        <td>读 CSV → 翻译/润色 → 生成 SEO meta → 批量推送到 Sanity</td>
+        <td><span class="tag tag-amber">P1</span></td>
+      </tr>
+      <tr>
+        <td><strong><code>/seo-review</code></strong></td>
+        <td>"查 SEO [站名]"</td>
+        <td>拉 GSC 数据 → 低垂果实分析 → 输出优化建议 + 新选题</td>
+        <td><span class="tag tag-amber">P1</span></td>
+      </tr>
+      <tr>
+        <td><strong><code>/site-status</code></strong></td>
+        <td>"矩阵状态"</td>
+        <td>所有站的流量/文章数/排名概览，一屏看完</td>
+        <td><span class="tag tag-blue">P2</span></td>
+      </tr>
+      <tr>
+        <td><strong><code>/site-kill</code></strong></td>
+        <td>"关站 [站名]"</td>
+        <td>Vercel 删除项目 + DNS 记录清理 + 归档 Sanity 数据</td>
+        <td><span class="tag tag-blue">P2</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════ B2C ═══ -->
+<section class="section" id="b2c">
+  <div class="section-num">B</div>
+  <h2 class="section-title">附录 · B2C / DTC 场景扩展</h2>
+  <p class="section-subtitle">WHEN YOU NEED E-COMMERCE</p>
+
+  <p>当某个站需要在线卖货时，<strong>不需要换架构</strong>。在现有 Next.js 基座上叠加电商能力：</p>
+
+  <div class="cols-2">
+    <div class="card">
+      <div class="card-label">方案 1 · Shopify Storefront API</div>
+      <p style="font-size:14px;color:var(--text-2);">Next.js 做前端（你已经有了），Shopify 只当后端电商引擎。你的页面设计完全自定义，Shopify 只管支付、库存、物流。</p>
+      <p style="font-size:13px;color:var(--text-3);margin-top:8px;"><strong>适合</strong>：品牌 DTC 站，需要 Shopify 的电商基建。<br><strong>费用</strong>：+$39/月（Shopify Basic）</p>
+    </div>
+    <div class="card">
+      <div class="card-label">方案 2 · Stripe Checkout</div>
+      <p style="font-size:14px;color:var(--text-2);">更轻量。直接在 Next.js 里集成 Stripe，产品少（< 50 SKU）时完全够用。不需要 Shopify 的重型基建。</p>
+      <p style="font-size:13px;color:var(--text-3);margin-top:8px;"><strong>适合</strong>：SKU 少的利基产品站。<br><strong>费用</strong>：Stripe 交易手续费 2.9% + $0.30/笔，无月费。</p>
+    </div>
+  </div>
+
+  <p style="font-size:14px;color:var(--text-2);margin-top:16px;"><strong>决策规则</strong>：SKU < 50 且不需要物流集成 → Stripe。SKU > 50 或需要物流/库存管理 → Shopify Storefront API。</p>
+</section>
+
+<!-- ═══════════════════════════════════════ HIRING ═══ -->
+<section class="section" id="hiring">
+  <div class="section-num">C</div>
+  <h2 class="section-title">附录 · 人才杠杆 — 招谁能 10 倍提速</h2>
+  <p class="section-subtitle">TALENT LEVERAGE — 大厂的"底层"可能是你的"核武器"</p>
+
+  <p class="drop-cap">2026 年最大的人才套利机会：大厂正在裁掉的初中级前端/全栈开发者，恰好是 AI 时代产出最高的人。他们懂代码所以能<strong>审查和修正 Claude 的输出</strong>，但在大厂的晋升体系里被卡在 P5/P6 永远上不去。你用 ¥8K-15K/月的成本，拿到的是一个人 + Claude = 10 人团队的产出。</p>
+
+  <div class="pullquote">
+    大厂把他们当螺丝钉，你把他们当操作员。<br>
+    螺丝钉拧一颗螺丝，操作员开一台机器。<br>
+    Claude Code 就是那台机器。
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-size:24px;margin:36px 0 16px;">为什么"低级别"程序员 + Claude = 恐怖战力</h3>
+
+  <div class="cols-2">
+    <div class="card">
+      <div class="card-label">传统大厂的悖论</div>
+      <p style="font-size:15px;color:var(--text-2);">在大厂，一个 P5 前端工程师：</p>
+      <ul style="font-size:14px;color:var(--text-2);padding-left:18px;margin-top:8px;">
+        <li>能写 React/Next.js 页面 ✅</li>
+        <li>能写 CSS + 响应式 ✅</li>
+        <li>能调 API ✅</li>
+        <li>能写单元测试 ✅</li>
+        <li>但一天只能做 <strong>1-2 个页面</strong></li>
+        <li>因为要 Code Review、Sprint Planning、Stand-up、技术方案评审、写文档……</li>
+        <li>真正写代码的时间只有 <strong>30%</strong></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-label">在你这里的释放</div>
+      <p style="font-size:15px;color:var(--text-2);">同一个人加入你的 Site Factory 系统：</p>
+      <ul style="font-size:14px;color:var(--text-2);padding-left:18px;margin-top:8px;">
+        <li>用 Claude Code 写代码 → 速度提升 <strong>5-10 倍</strong></li>
+        <li>没有 Code Review 流程（Claude + 他自己审）</li>
+        <li>没有 Sprint Meeting（你直接说"建个新站"）</li>
+        <li>一天能出 <strong>5-10 个页面</strong></li>
+        <li>一周能搭 <strong>2-3 个完整站点</strong></li>
+        <li>真正写代码的时间 <strong>90%</strong></li>
+        <li>但他的核心价值不是"写代码"，是<strong>审查 Claude 的输出 + 修 bug</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-size:24px;margin:40px 0 16px;">四个你该招的岗位画像</h3>
+
+  <div class="cols-2">
+    <div class="card-accent card">
+      <div class="card-label">岗位 1 · AI-Native 全栈工程师 ⭐ 最推荐</div>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin-bottom:8px;">画像</h4>
+      <p style="font-size:14px;color:var(--text-2);">1-3 年经验的前端/全栈开发者，已经在用 Claude Code / Cursor / Copilot 日常开发。在大厂可能是 P4-P5（初级-中级），月薪 ¥8K-15K。</p>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin:12px 0 8px;">核心能力</h4>
+      <ul style="font-size:13px;color:var(--text-2);padding-left:18px;">
+        <li>React / Next.js 能看懂、能改、能审查</li>
+        <li>会用 Claude Code / Cursor 的 agent 模式</li>
+        <li>能写 CLAUDE.md 和 Skills（这是核心竞争力）</li>
+        <li>能读报错信息 + 定位 bug（Claude 解决不了的那 10%）</li>
+      </ul>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin:12px 0 8px;">在你的系统里干什么</h4>
+      <p style="font-size:13px;color:var(--text-2);">操作 Site Factory 全流程：建站 → 改模板 → 调 API → 配部署 → 写 Skill 自动化。<strong>一个人管 10+ 个站点的技术侧</strong>。</p>
+      <div style="margin-top:12px;">
+        <span class="tag tag-red">产出/天：5-10 页面</span>
+        <span class="tag tag-red">产出/周：2-3 个新站</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">岗位 2 · SEO 内容运营（懂 AI 工具）</div>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin-bottom:8px;">画像</h4>
+      <p style="font-size:14px;color:var(--text-2);">传统 SEO 专员 / 内容编辑，会用 ChatGPT / Claude 辅助写作，懂关键词研究。月薪 ¥6K-10K。</p>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin:12px 0 8px;">核心能力</h4>
+      <ul style="font-size:13px;color:var(--text-2);padding-left:18px;">
+        <li>懂 SEO 基础（关键词、Meta、内链、GSC）</li>
+        <li>会用 Claude 批量生成 + 审核内容</li>
+        <li>能判断"这篇文章对买家有没有用"（行业知识）</li>
+        <li>会用 /humanizer 去 AI 味</li>
+      </ul>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin:12px 0 8px;">在你的系统里干什么</h4>
+      <p style="font-size:13px;color:var(--text-2);">操作 Content Pipeline：关键词研究 → 用 Claude 生成 → 审核 → 推送发布。<strong>一个人一天出 10-20 篇 SEO 博客</strong>（传统模式一天 1-2 篇）。</p>
+      <div style="margin-top:12px;">
+        <span class="tag tag-amber">产出/天：10-20 篇博客</span>
+        <span class="tag tag-amber">产出/月：覆盖 200+ 长尾词</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cols-2" style="margin-top:0;">
+    <div class="card">
+      <div class="card-label">岗位 3 · 设计感强的前端切图手</div>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin-bottom:8px;">画像</h4>
+      <p style="font-size:14px;color:var(--text-2);">会 Figma + 能写 CSS/Tailwind 的人。可能是设计转前端、或者前端但审美在线。在大厂叫"UI 开发"或"前端切图"，P4 级别。月薪 ¥6K-12K。</p>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin:12px 0 8px;">在你的系统里干什么</h4>
+      <p style="font-size:13px;color:var(--text-2);">把 Claude 生成的"能用但丑"的页面变成"能看且专业"。<strong>用 Olivier 的方法</strong>：截图竞品 → 给 Claude → 审核输出 → 微调设计。专门负责首页/落地页/产品页的视觉质量。</p>
+      <div style="margin-top:12px;">
+        <span class="tag tag-blue">核心价值：审美 + 落地能力</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">岗位 4 · 自动化/脚本小能手</div>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin-bottom:8px;">画像</h4>
+      <p style="font-size:14px;color:var(--text-2);">会写 Python/Node.js 脚本、用过 n8n / Make 等自动化工具的人。可能是运维转开发、测试转自动化。月薪 ¥8K-12K。</p>
+      <h4 style="font-family:var(--font-display);font-size:18px;margin:12px 0 8px;">在你的系统里干什么</h4>
+      <p style="font-size:13px;color:var(--text-2);">写和维护 Claude Code Skills、配 Webhook（Sanity → Vercel 触发重建）、接 GSC API 拉数据、配 Cron 定时任务。<strong>让整个系统从"Claude 帮忙"变成"全自动运行"</strong>。</p>
+      <div style="margin-top:12px;">
+        <span class="tag tag-green">核心价值：胶水层 + 自动化</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-size:24px;margin:40px 0 16px;">团队配置方案</h3>
+
+  <div class="card-accent card">
+    <div class="card-label">按预算选择 — 从 1 人到 4 人</div>
+    <table>
+      <thead><tr><th>阶段</th><th>配置</th><th>月成本</th><th>产出能力</th><th>等效传统团队</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>你一个人</strong></td>
+          <td>你 + Claude Code</td>
+          <td>¥0（你自己的时间）</td>
+          <td>每周 1 个站 + 10 篇文章</td>
+          <td>≈ 2 人团队</td>
+        </tr>
+        <tr>
+          <td><strong>最小团队</strong></td>
+          <td>你 + 1 个 AI-Native 全栈</td>
+          <td>¥8K-15K</td>
+          <td>每周 2-3 个站 + 30 篇文章</td>
+          <td>≈ 5-8 人团队</td>
+        </tr>
+        <tr>
+          <td><strong>标准团队</strong></td>
+          <td>你 + 全栈 + SEO 内容运营</td>
+          <td>¥15K-25K</td>
+          <td>每周 3 个站 + 100 篇文章</td>
+          <td>≈ 10-15 人团队</td>
+        </tr>
+        <tr>
+          <td><strong>满编团队</strong></td>
+          <td>你 + 全栈 + SEO + 设计 + 自动化</td>
+          <td>¥30K-50K</td>
+          <td>每周 5+ 个站 + 200 篇文章</td>
+          <td>≈ 20-30 人团队</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:14px;color:var(--text-2);margin-top:12px;"><strong>关键洞察</strong>：满编 4 人团队 + Claude Code，产出等效于传统 20-30 人的营销+开发团队。月成本 ¥30-50K vs 传统 ¥200-400K。这就是 Cody Schneider 说的 <em>"the cost of marketing is going to zero"</em>。</p>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-size:24px;margin:40px 0 16px;">去哪里找这些人</h3>
+
+  <table>
+    <thead><tr><th>渠道</th><th>找什么人</th><th>怎么筛</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>BOSS直聘 / 拉勾</strong></td>
+        <td>搜 "前端开发" "React" "Next.js"，筛 1-3 年经验</td>
+        <td>面试问：<em>"你平时用 AI 工具写代码吗？用哪个？"</em> 如果答 Claude Code / Cursor 且能说出具体用法 → 对的人</td>
+      </tr>
+      <tr>
+        <td><strong>即刻 / V2EX / X</strong></td>
+        <td>搜 "vibe coding" "Claude Code" "AI 开发" 相关帖子</td>
+        <td>主动发帖分享 AI 开发经验的人。这类人在大厂可能只是 P4，但在你这里是核武器</td>
+      </tr>
+      <tr>
+        <td><strong>GitHub</strong></td>
+        <td>找有 Claude Code 相关项目、有 CLAUDE.md 的仓库作者</td>
+        <td>已经在实践的人 > 声称会的人</td>
+      </tr>
+      <tr>
+        <td><strong>被大厂裁员群</strong></td>
+        <td>2024-2026 被裁的初中级前端</td>
+        <td>技术能力没问题（大厂面试过的），只是在晋升游戏中出局。最有性价比。</td>
+      </tr>
+      <tr>
+        <td><strong>自由职业平台</strong></td>
+        <td>Upwork / 猪八戒 / 程序员客栈</td>
+        <td>按项目付费试用：给一个小任务（用 Claude Code 搭一个 landing page），看产出速度和质量</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pullquote">
+    面试只问一个问题：<br>
+    "用 Claude Code 从零搭一个带博客的 Next.js 站，<br>
+    你觉得需要多久？"<br>
+    答"一天"的人 → 对的人。<br>
+    答"一周"的人 → 还在用传统方式写代码。
+    <cite>— 筛选标准</cite>
+  </div>
+
+  <h3 style="font-family:var(--font-display);font-size:24px;margin:40px 0 16px;">他们为什么在大厂"级别低"但在你这里"恐怖"</h3>
+
+  <div class="card">
+    <div class="card-label">大厂晋升 vs 实际生产力 — 完全脱钩</div>
+    <table>
+      <thead><tr><th>大厂考核的</th><th>你需要的</th><th>关系</th></tr></thead>
+      <tbody>
+        <tr><td>系统设计能力（P7+）</td><td>用 Claude 快速出页面</td><td><span class="tag tag-red">无关</span></td></tr>
+        <tr><td>带团队管理能力（P6+）</td><td>一个人 + AI 搞定一切</td><td><span class="tag tag-red">反向相关</span></td></tr>
+        <tr><td>写技术方案文档</td><td>30 秒给 Claude 一句话指令</td><td><span class="tag tag-red">浪费时间</span></td></tr>
+        <tr><td>Code Review 别人代码</td><td>Review Claude 生成的代码</td><td><span class="tag tag-green">相同技能，不同对象</span></td></tr>
+        <tr><td>从零设计复杂架构</td><td>用模板 + config 快速复制</td><td><span class="tag tag-amber">用不上</span></td></tr>
+        <tr><td>能写 React 组件</td><td>能审查 Claude 写的 React</td><td><span class="tag tag-green">正好需要</span></td></tr>
+        <tr><td>理解 CSS/布局</td><td>能判断"这个页面好不好看"</td><td><span class="tag tag-green">核心能力</span></td></tr>
+        <tr><td>调试能力</td><td>Claude 搞不定时能接手</td><td><span class="tag tag-green">关键时刻的救命技能</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:14px;color:var(--text-2);margin-top:12px;"><strong>结论</strong>：大厂 P7/P8 的"系统设计""团队管理"能力对你<strong>完全没用</strong>。你需要的是 P4/P5 的<strong>基础代码能力 + AI 工具熟练度</strong>。而这些人在大厂的人才市场上是"被贬值"的——你在人才市场上做的是套利。</p>
+  </div>
+
+  <div class="card-accent card">
+    <div class="card-label">一个实际场景的对比</div>
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:12px;"><strong>任务</strong>：给一个太阳能板 B2B 客户搭站 + 50 篇 SEO 博客 + 产品页</p>
+    <div class="cols-2" style="margin:0;">
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:16px;">传统外包团队</h4>
+        <ul style="font-size:13px;color:var(--text-2);padding-left:18px;">
+          <li>项目经理 × 1</li>
+          <li>UI 设计师 × 1</li>
+          <li>前端开发 × 2</li>
+          <li>后端开发 × 1</li>
+          <li>SEO 专员 × 1</li>
+          <li>内容写手 × 2</li>
+          <li><strong>8 人 · 4-6 周 · ¥80K-150K</strong></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:16px;">你的 Site Factory 团队</h4>
+        <ul style="font-size:13px;color:var(--text-2);padding-left:18px;">
+          <li>你（决策 + 审核）</li>
+          <li>AI-Native 全栈 × 1</li>
+          <li>Claude Code × N 个实例</li>
+          <li><strong>2 人 · 1 周 · ¥2K-4K（人力边际成本）</strong></li>
+        </ul>
+        <p style="font-size:12px;color:var(--accent);margin-top:8px;">同样的交付物，成本低 30-50 倍，速度快 4-6 倍。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════ LEARNING EXTENSION ═══ -->
+<section class="section" id="learning">
+  <div class="section-num">D</div>
+  <h2 class="section-title">附录 · 从零开始完整学习手册</h2>
+  <p class="section-subtitle">ZERO-TO-ONE LEARNING GUIDE — 技术栈 SOP + 人物教程 + YouTube 资源</p>
+
+  <p class="drop-cap">你说你是从零开始。这个附录就是为零基础设计的——每个技术点都有详细 SOP，每个人物都有具体的学习入口和深入路径。按顺序走，不要跳步。</p>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <!-- ═══ TECH SOP 1: Node.js ═══ -->
+  <h3 style="font-family:var(--font-display);font-size:28px;margin:48px 0 8px;">技术 SOP ①：环境准备</h3>
+  <p style="font-family:var(--font-caption);font-size:12px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;">PREREQUISITE — 30 分钟搞定，只做一次</p>
+
+  <div class="card">
+    <div class="card-label">Step 1 · 安装 Node.js</div>
+    <p style="font-size:15px;color:var(--text-2);">Next.js 运行在 Node.js 上。你不需要学 Node.js，但必须装它。</p>
+    <div class="step" style="margin-top:16px;">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">1</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">下载安装 Node.js</h4>
+        <p>去 <a href="https://nodejs.org" style="color:var(--accent);">nodejs.org</a> 下载 LTS 版本（不要选 Current）。Mac 用户也可以用 <code>brew install node</code>。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">2</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">验证安装</h4>
+        <p>终端输入 <code>node -v</code> 和 <code>npm -v</code>，看到版本号就成功了。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">3</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">安装 VS Code + Claude Code</h4>
+        <p>你应该已经有了。没有的话：<a href="https://code.visualstudio.com" style="color:var(--accent);">VS Code</a> → Extensions → 搜索 Claude Code → 安装。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TECH SOP 2: Next.js ═══ -->
+  <h3 style="font-family:var(--font-display);font-size:28px;margin:48px 0 8px;">技术 SOP ②：Next.js 基础</h3>
+  <p style="font-family:var(--font-caption);font-size:12px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;">你不需要精通，但需要理解 5 个核心概念</p>
+
+  <div class="card-accent card">
+    <div class="card-label">你需要理解的 5 个概念（不需要会写）</div>
+    <table>
+      <thead><tr><th>#</th><th>概念</th><th>一句话解释</th><th>为什么重要</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>App Router</strong></td><td>文件夹结构 = 网站 URL 结构。<code>/app/blog/page.tsx</code> = 访问 <code>/blog</code></td><td>你需要知道"加一个页面"意味着加一个文件夹</td></tr>
+        <tr><td>2</td><td><strong>Server Components</strong></td><td>页面在服务器上渲染成 HTML 再发给浏览器</td><td>这就是 SEO 好的原因——Google 爬到的是完整 HTML</td></tr>
+        <tr><td>3</td><td><strong>SSG / ISR</strong></td><td>SSG = 构建时生成静态页面。ISR = 上线后也能更新单个页面</td><td>博客文章发布后不需要重建整个站</td></tr>
+        <tr><td>4</td><td><strong>Dynamic Routes</strong></td><td><code>[slug]</code> 文件夹 = 一个模板生成 N 个页面</td><td>一个博客模板自动生成所有博客页面</td></tr>
+        <tr><td>5</td><td><strong>API Routes</strong></td><td>在 Next.js 里直接写后端接口</td><td>Claude 可以调用这些接口触发内容更新</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-label">YouTube 学习资源 — Next.js</div>
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:12px;">按顺序看，每个频道选 1 个视频就够：</p>
+    <table>
+      <thead><tr><th>优先级</th><th>频道</th><th>搜索关键词</th><th>时长</th><th>学到什么</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-red">先看</span></td><td><strong><a href="https://www.youtube.com/@programmingwithmosh" style="color:var(--accent);">Programming with Mosh</a></strong></td><td>"Next.js Tutorial for Beginners"</td><td>~1h</td><td>最友好的入门，零基础能看懂</td></tr>
+        <tr><td><span class="tag tag-red">先看</span></td><td><strong><a href="https://www.youtube.com/@Codevolution" style="color:var(--accent);">Codevolution</a></strong></td><td>"Next.js 15 Tutorial" 播放列表</td><td>~8h 分集</td><td>最完整的系列，每集 10-15 分钟，像教科书</td></tr>
+        <tr><td><span class="tag tag-amber">补充</span></td><td><strong><a href="https://www.youtube.com/@javascriptmastery" style="color:var(--accent);">JavaScript Mastery</a></strong></td><td>"Next.js 15 Full Course"</td><td>~4h</td><td>项目驱动学习，跟着做一个完整项目</td></tr>
+        <tr><td><span class="tag tag-blue">参考</span></td><td><strong><a href="https://www.youtube.com/@laboratoriodigital" style="color:var(--accent);">Lee Robinson (Vercel)</a></strong></td><td>"Next.js App Router"</td><td>~30m</td><td>Vercel 官方 VP 讲解，权威但偏高级</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--text-3);margin-top:8px;"><strong>学习策略</strong>：先看 Mosh 的入门（1小时建立概念）→ 然后让 Claude 帮你建项目 → 遇到不懂的再去 Codevolution 查对应的集。不要试图看完所有视频再动手。</p>
+  </div>
+
+  <!-- ═══ TECH SOP 3: Sanity ═══ -->
+  <h3 style="font-family:var(--font-display);font-size:28px;margin:48px 0 8px;">技术 SOP ③：Sanity CMS</h3>
+  <p style="font-family:var(--font-caption);font-size:12px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;">你的内容仓库 — 所有博客和产品数据存这里</p>
+
+  <div class="card">
+    <div class="card-label">Sanity 上手 SOP</div>
+    <div class="step">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">1</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">注册 Sanity 账号</h4>
+        <p>去 <a href="https://www.sanity.io" style="color:var(--accent);">sanity.io</a> → Sign up → GitHub 登录最方便。免费 plan 足够用。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">2</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">创建 Project</h4>
+        <p>Dashboard → Create Project → 给个名字 → 拿到 <strong>Project ID</strong>（一串字符）。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">3</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">创建 API Token</h4>
+        <p>Settings → API → Add Token → 权限选 "Editor" → 复制 token（只显示一次，存好）。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">4</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">把 ID 和 Token 给 Claude</h4>
+        <p>存到项目的 <code>.env.local</code> 文件里。Claude 会帮你配好连接。<strong>你的活到这里就结束了</strong>。</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">YouTube 学习资源 — Sanity CMS</div>
+    <table>
+      <thead><tr><th>优先级</th><th>频道</th><th>搜索关键词</th><th>学到什么</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag tag-red">先看</span></td><td><strong><a href="https://www.youtube.com/@sanaboratory" style="color:var(--accent);">Sanity.io Official</a></strong></td><td>"Getting Started with Sanity"</td><td>官方入门，10 分钟理解 Sanity 是什么</td></tr>
+        <tr><td><span class="tag tag-red">先看</span></td><td><strong><a href="https://www.youtube.com/@sonnysangha" style="color:var(--accent);">Sonny Sangha</a></strong></td><td>"Next.js Sanity blog tutorial"</td><td>跟着做一个博客，最实用</td></tr>
+        <tr><td><span class="tag tag-amber">补充</span></td><td><strong><a href="https://www.youtube.com/@codewithantonio" style="color:var(--accent);">Code with Antonio</a></strong></td><td>"Sanity CMS Next.js"</td><td>长视频项目教程，适合深入</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;color:var(--text-3);margin-top:8px;"><strong>官方文档</strong>（写得非常好）：<a href="https://www.sanity.io/docs" style="color:var(--accent);">sanity.io/docs</a> + <a href="https://www.sanity.io/docs/next-js" style="color:var(--accent);">Next.js 集成指南</a></p>
+  </div>
+
+  <!-- ═══ TECH SOP 4: Vercel ═══ -->
+  <h3 style="font-family:var(--font-display);font-size:28px;margin:48px 0 8px;">技术 SOP ④：Vercel 部署</h3>
+  <p style="font-family:var(--font-caption);font-size:12px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;">最简单的一步 — GIT PUSH = 上线</p>
+
+  <div class="card">
+    <div class="card-label">Vercel 上手 SOP</div>
+    <div class="step">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">1</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">注册 Vercel</h4>
+        <p><a href="https://vercel.com" style="color:var(--accent);">vercel.com</a> → Sign up with GitHub。用 GitHub 登录，后续部署自动关联。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">2</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">Import 项目</h4>
+        <p>Dashboard → Import Project → 选你的 GitHub 仓库 → Vercel 自动检测 Next.js → Deploy。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">3</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">配置环境变量</h4>
+        <p>Settings → Environment Variables → 把 Sanity 的 Project ID 和 Token 加上去。</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num-circle" style="width:32px;height:32px;font-size:14px;">4</div>
+      <div class="step-content">
+        <h4 style="font-size:16px;">绑定域名（可选）</h4>
+        <p>Settings → Domains → 输入你的域名 → Vercel 给你 DNS 记录 → 去域名商那边配。</p>
+      </div>
+    </div>
+    <p style="font-size:14px;color:var(--text-2);margin-top:16px;"><strong>之后的工作流</strong>：你（或 Claude）改代码 → git push → Vercel 自动重新部署 → 2 分钟后新版本上线。就这么简单。</p>
+  </div>
+
+  <div class="card">
+    <div class="card-label">YouTube 学习资源 — Vercel</div>
+    <table>
+      <thead><tr><th>频道</th><th>搜索关键词</th><th>学到什么</th></tr></thead>
+      <tbody>
+        <tr><td><strong><a href="https://www.youtube.com/@VercelHQ" style="color:var(--accent);">Vercel Official</a></strong></td><td>"Deploy Next.js to Vercel"</td><td>官方教程，3 分钟看完整流程</td></tr>
+        <tr><td><strong><a href="https://www.youtube.com/@TraversyMedia" style="color:var(--accent);">Traversy Media</a></strong></td><td>"Vercel deployment tutorial"</td><td>Brad Traversy 讲得最通俗</td></tr>
+        <tr><td><strong><a href="https://www.youtube.com/@firaborz" style="color:var(--accent);">Fireship</a></strong></td><td>"Vercel in 100 seconds"</td><td>100 秒快速理解 Vercel 是什么</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <!-- ═══ PERSON DEEP DIVES ═══ -->
+  <h3 style="font-family:var(--font-display);font-size:28px;margin:48px 0 8px;">人物深度学习路径</h3>
+  <p style="font-family:var(--font-caption);font-size:12px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;">每个人学什么、在哪学、怎么用</p>
+
+  <!-- Person 1: Olivier -->
+  <div class="phase" data-phase="PERSON 1 · OLIVIER CROGUY">
+    <h3>Claude + Shopify/页面构建大师</h3>
+    <div class="time">主要内容平台：X (Twitter) @oliviercroguy · 无 YouTube 频道</div>
+
+    <div class="cols-sidebar" style="margin:16px 0;">
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:16px;">学什么</h4>
+        <ul style="font-size:14px;color:var(--text-2);padding-left:18px;">
+          <li><strong>CLAUDE.md 品牌文件夹结构</strong> — 怎么让 Claude 理解你的品牌</li>
+          <li><strong>逐 Section 构建法</strong> — 永远不要让 AI 一次输出完整页面</li>
+          <li><strong>Liquid Skills 开源文件</strong> — Benjamin Sehl（Shopify 产品总监）写的</li>
+          <li><strong>截图/录屏驱动</strong> — 给 Claude 看竞品截图，让它复刻</li>
+          <li><strong>Nanobanana AI 图片</strong> — 用 API 自动生成产品图</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:16px;">学习入口</h4>
+        <ul style="font-size:13px;color:var(--text-2);padding-left:18px;">
+          <li><a href="https://x.com/oliviercroguy/status/2029645122879574349" style="color:var(--accent);">Setup Guide 长文</a> — Claude + Shopify MCP 完整设置</li>
+          <li><a href="https://x.com/oliviercroguy/status/2032206835965424077" style="color:var(--accent);">简易方法</a> — 不用 MCP，只用 Shopify CLI</li>
+          <li><a href="https://x.com/oliviercroguy/status/2029672432231960660" style="color:var(--accent);">10 分钟 Demo</a> — 从零到 Shopify 上线的实录</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card-accent card" style="margin-top:8px;">
+      <div class="card-label">SOP · 用 Olivier 方法构建一个页面</div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">1</div><div class="step-content"><p style="font-size:14px;"><strong>建品牌文件夹</strong>：创建 <code>brand/</code> 目录，放入品牌名、色板、竞品截图、产品描述、受众画像</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">2</div><div class="step-content"><p style="font-size:14px;"><strong>写 CLAUDE.md</strong>：告诉 Claude 品牌调性、禁止事项、设计偏好、技术栈约定</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">3</div><div class="step-content"><p style="font-size:14px;"><strong>策略研究</strong>：让 Claude 分析竞品落地页（给截图）→ 提炼结构 → 设计 Offer</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">4</div><div class="step-content"><p style="font-size:14px;"><strong>逐 Section 构建</strong>：Hero → 价值主张 → 社会证明 → 产品展示 → FAQ → CTA。每个 section 出 2-3 变体让你选</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">5</div><div class="step-content"><p style="font-size:14px;"><strong>组装 + 部署</strong>：选好的 section 组合 → 代码检查 → 推送上线</p></div></div>
+    </div>
+
+    <p style="font-size:14px;color:var(--text-2);margin-top:12px;"><strong>你已有的笔记</strong>：<code>guide-olivier-croguy-claude-shopify-playbook-2026-03-31.html</code> — 包含他的完整 12 步流程。</p>
+  </div>
+
+  <!-- Person 2: Cody Schneider -->
+  <div class="phase" data-phase="PERSON 2 · CODY SCHNEIDER">
+    <h3>GTM Engineering + 程序化 SEO + 7 Agent 并行</h3>
+    <div class="time">X @codyschneiderxx (59.8K followers) · YouTube 有频道但以 X 为主</div>
+
+    <div class="cols-sidebar" style="margin:16px 0;">
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:16px;">学什么</h4>
+        <ul style="font-size:14px;color:var(--text-2);padding-left:18px;">
+          <li><strong>GTM Engineering 思维</strong> — 把营销流程变成可编程的工作流</li>
+          <li><strong>7 Agent 并行架构</strong> — SEO/PPC/竞品/社媒同时跑（先从 1 个开始）</li>
+          <li><strong>Draft Horse AI 逻辑</strong> — 程序化 SEO：模板 + 数据 = 批量页面</li>
+          <li><strong>Claude Code SEO 实操</strong> — Keywords Everywhere API + DataForSEO API 组合</li>
+          <li><strong>Facebook Ads 自动化</strong> — Claude Code 管理广告的实际流程</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:16px;">学习入口</h4>
+        <ul style="font-size:13px;color:var(--text-2);padding-left:18px;">
+          <li><a href="https://x.com/codyschneiderxx/status/2023849940401770686" style="color:var(--accent);">GTM Engineering with Claude Code — Notion 完整指南</a></li>
+          <li><a href="https://x.com/codyschneiderxx/status/2021283027775561898" style="color:var(--accent);">Claude Code SEO 实操帖</a> — Keywords Everywhere + DataForSEO</li>
+          <li><a href="https://x.com/codyschneiderxx/status/2026421911538762176" style="color:var(--accent);">100+ Facebook 广告自动生成</a> — Claude Code 实操</li>
+          <li><a href="https://x.com/codyschneiderxx/status/2028561024366817433" style="color:var(--accent);">Facebook Ads API 管理教程</a></li>
+          <li>GitHub: 搜索 "Paid Ads Command Center" — 开源 PPC 自动化脚本</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card-accent card" style="margin-top:8px;">
+      <div class="card-label">SOP · 用 Cody 方法做 SEO Agent</div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">1</div><div class="step-content"><p style="font-size:14px;"><strong>环境准备</strong>：申请 Keywords Everywhere API ($10/100K credits) + DataForSEO API（免费试用）</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">2</div><div class="step-content"><p style="font-size:14px;"><strong>配置 .env</strong>：API keys 存入 <code>.env</code>，Claude Code 读取</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">3</div><div class="step-content"><p style="font-size:14px;"><strong>第一个 Agent</strong>：创建 SEO Content Publisher skill — 关键词研究 → 文章生成 → 发布到 CMS</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">4</div><div class="step-content"><p style="font-size:14px;"><strong>验证闭环</strong>：跑一次完整流程，确认从关键词到文章上线全通</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">5</div><div class="step-content"><p style="font-size:14px;"><strong>扩展 Agent</strong>：有效后加 Social Media Agent、Competitor Monitor Agent 等</p></div></div>
+    </div>
+
+    <p style="font-size:14px;color:var(--text-2);margin-top:12px;"><strong>你已有的笔记</strong>：<code>guide-cody-schneider-gtm-engineering-claude-2026-03-27.html</code> — 完整的 7 Agent 架构 + 产品矩阵分析。</p>
+  </div>
+
+  <!-- Person 3: Steipete -->
+  <div class="phase" data-phase="PERSON 3 · STEIPETE (PETER STEINBERGER)">
+    <h3>Claude Code 哲学 + Content Pipeline + Agentic Engineering</h3>
+    <div class="time">博客 steipete.me · GitHub @steipete · 无专门 YouTube 频道</div>
+
+    <div class="cols-sidebar" style="margin:16px 0;">
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:16px;">学什么</h4>
+        <ul style="font-size:14px;color:var(--text-2);padding-left:18px;">
+          <li><strong>"Just Talk To It"</strong> — 不要过度工程化 prompt，直接说人话</li>
+          <li><strong>爆炸半径思维</strong> — 每次改动评估影响范围</li>
+          <li><strong>Content Pipeline 实现</strong> — 选题 → 去重 → 生产的完整流程</li>
+          <li><strong>截图驱动开发</strong> — 50% 的 prompt 包含截图</li>
+          <li><strong>多实例并行</strong> — 3-8 个 Claude 实例同时跑</li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:16px;">必读文章（按顺序）</h4>
+        <ol style="font-size:13px;color:var(--text-2);padding-left:18px;">
+          <li><a href="https://steipete.me/posts/just-talk-to-it" style="color:var(--accent);">Just Talk To It</a> — 核心哲学宣言</li>
+          <li><a href="https://steipete.me/posts/2025/essential-reading" style="color:var(--accent);">Essential Reading for Agentic Engineers</a> — 策划的资源清单</li>
+          <li><a href="https://steipete.me/posts/2025/the-future-of-vibe-coding" style="color:var(--accent);">The Future of Vibe Coding</a> — 从 idea 到产品的实录</li>
+          <li><a href="https://steipete.me/posts/just-one-more-prompt" style="color:var(--accent);">Just One More Prompt</a> — "Claudoholic" 自白</li>
+          <li><a href="https://elite-ai-assisted-coding.dev/p/you-can-just-do-things-steipete" style="color:var(--accent);">You Can Just Do Things</a> — 外部采访，展示实际工作方式</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card-accent card" style="margin-top:8px;">
+      <div class="card-label">SOP · 用 Steipete 方法管理 Claude Code</div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">1</div><div class="step-content"><p style="font-size:14px;"><strong>写好 CLAUDE.md</strong>：项目规则、技术栈、禁止事项。这是"活文档"，Claude 自己也可以更新它</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">2</div><div class="step-content"><p style="font-size:14px;"><strong>直接说人话</strong>：不要写复杂 prompt 模板。"帮我加一个博客页面，参考这个截图" 就够了</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">3</div><div class="step-content"><p style="font-size:14px;"><strong>任务难度升级时加触发词</strong>："take your time" "comprehensive" "read all code that could be related"</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">4</div><div class="step-content"><p style="font-size:14px;"><strong>评估爆炸半径</strong>：小改动（几个文件）→ 直接让 Claude 做。大改动 → 先讨论 "let's discuss, give me options"</p></div></div>
+      <div class="step"><div class="step-num-circle" style="width:28px;height:28px;font-size:12px;">5</div><div class="step-content"><p style="font-size:14px;"><strong>不怕中途叫停</strong>：按 Escape → "what's the status" → 决定继续/调整/放弃</p></div></div>
+    </div>
+
+    <p style="font-size:14px;color:var(--text-2);margin-top:12px;"><strong>你已有的笔记</strong>：<code>guide-steipete-prompt-philosophy-2026-03-30.md</code> + <code>guide-steipete-openclaw-complete-2026-03-30.html</code></p>
+  </div>
+
+  <!-- Person 4: Brandon Leibowitz -->
+  <div class="phase" data-phase="PERSON 4 · BRANDON LEIBOWITZ">
+    <h3>SEO 方法论 — 两个核心概念</h3>
+    <div class="time">YouTube 频道: SEO Optimizers · 57 个视频播放列表</div>
+
+    <div class="cols-sidebar" style="margin:16px 0;">
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:16px;">只学两个概念</h4>
+        <div class="card" style="background:var(--accent-light);margin:8px 0;">
+          <p style="font-size:14px;"><strong>① Profit Matrix</strong> — 只做高买家意图的底部漏斗内容。"running shoes for pregnant women with sore backs" 而不是 "running shoes"。</p>
+        </div>
+        <div class="card" style="background:var(--accent-light);margin:8px 0;">
+          <p style="font-size:14px;"><strong>② Answer-First Method</strong> — H2 写成问题 → 第一句给直接答案 → 然后展开。让 AI Overview / ChatGPT / Perplexity 引用你。</p>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-family:var(--font-display);font-size:16px;">YouTube 推荐看的视频</h4>
+        <p style="font-size:13px;color:var(--text-2);">他的频道搜索 "SEO Optimizers"。57 个视频，你只需要看 3 个：</p>
+        <ul style="font-size:13px;color:var(--text-2);padding-left:18px;margin-top:8px;">
+          <li>搜索 "<strong>Claude Code SEO automation</strong>" — 工具栈设置</li>
+          <li>搜索 "<strong>bottom of funnel content</strong>" — Profit Matrix 讲解</li>
+          <li>搜索 "<strong>AI Overview optimization</strong>" — Answer-First 方法</li>
+        </ul>
+        <p style="font-size:12px;color:var(--text-3);margin-top:8px;">⚠️ 他每个视频都在推 Arvo（SEO 写作工具），这是 affiliate 营销。你不需要 Arvo，你有 Claude + Sanity。</p>
+      </div>
+    </div>
+
+    <p style="font-size:14px;color:var(--text-2);margin-top:4px;"><strong>你已有的笔记</strong>：本次对话开头整理的 10 个要点，已经覆盖了他 57 个视频的全部核心价值。</p>
+  </div>
+
+  <!-- Person 5: Mike Futia (bonus) -->
+  <div class="phase" data-phase="BONUS · MIKE FUTIA">
+    <h3>Claude Code + 落地页克隆 + DTC 广告页</h3>
+    <div class="time">X @mikefutia · 实战派，专注 Claude Code 做电商广告页</div>
+
+    <div class="card" style="margin:8px 0;">
+      <p style="font-size:14px;color:var(--text-2);">在搜索 Olivier 时发现的宝藏。Mike Futia 做的事：</p>
+      <ul style="font-size:14px;color:var(--text-2);padding-left:18px;">
+        <li><strong>用 Claude Code 克隆竞品广告页</strong>：找到 Meta 上跑了几个月的 advertorial → 喂给 Claude → 输出你的品牌版本</li>
+        <li><strong>Claude Code + Nanobanana 2</strong>：一个 prompt → 完整的预售页（文案 + AI 产品图 + 测评 + 定价）</li>
+        <li><strong>Claude Code + Google Stitch 2.0</strong>：截图竞品 → Google AI 设计代理生成设计 → Claude Code 写代码实现</li>
+      </ul>
+      <p style="font-size:13px;color:var(--text-3);margin-top:8px;">
+        入口：<a href="https://x.com/mikefutia/status/2026383863975661617" style="color:var(--accent);">落地页克隆系统</a> ·
+        <a href="https://x.com/mikefutia/status/2035748211504374038" style="color:var(--accent);">Nanobanana 2 实操</a> ·
+        <a href="https://x.com/mikefutia/status/2036107642687647894" style="color:var(--accent);">Google Stitch 2.0 工作流</a>
+      </p>
+    </div>
+    <p style="font-size:14px;color:var(--text-2);"><strong>为什么列他</strong>：如果你将来做 B2C/DTC 站需要快速出广告落地页，他的方法比 Olivier 更激进——直接克隆已验证有效的竞品页面结构。</p>
+  </div>
+
+  <div class="divider">◆ ◆ ◆</div>
+
+  <!-- ═══ COMPLETE LEARNING SEQUENCE ═══ -->
+  <h3 style="font-family:var(--font-display);font-size:28px;margin:48px 0 8px;">完整学习顺序（从零开始 14 天路线）</h3>
+  <p style="font-family:var(--font-caption);font-size:12px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:24px;">按这个顺序走，不要跳步</p>
+
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-time">Day 1</div>
+      <h4>环境 + 概念理解</h4>
+      <p>
+        上午：装 Node.js + VS Code + Claude Code（30分钟）<br>
+        下午：看 <strong>Programming with Mosh</strong> 的 Next.js 入门（1小时）<br>
+        晚上：看 <strong>Fireship</strong> 的 "Vercel in 100 seconds" + <strong>Sanity 官方</strong>入门视频（30分钟）<br>
+        <strong>目标</strong>：理解 Next.js / Sanity / Vercel 分别干什么，不需要会用
+      </p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Day 2</div>
+      <h4>注册账号 + 读 Steipete</h4>
+      <p>
+        上午：注册 <a href="https://sanity.io" style="color:var(--accent);">Sanity</a> + <a href="https://vercel.com" style="color:var(--accent);">Vercel</a> + <a href="https://github.com" style="color:var(--accent);">GitHub</a>（各 5 分钟）<br>
+        下午：读 steipete 的 <a href="https://steipete.me/posts/just-talk-to-it" style="color:var(--accent);">Just Talk To It</a>（30分钟）<br>
+        晚上：读你自己的笔记 <code>guide-steipete-prompt-philosophy</code>（20分钟）<br>
+        <strong>目标</strong>：掌握"怎么和 Claude Code 协作"的哲学
+      </p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Day 3-4</div>
+      <h4>让 Claude 搭第一个站</h4>
+      <p>
+        读你的笔记 <code>guide-olivier-croguy</code> 的前 4 步 → 建品牌文件夹 → 写 CLAUDE.md<br>
+        然后告诉 Claude："用 Next.js + Sanity + Vercel 帮我搭一个 [品类] 的 B2B 展示站"<br>
+        <strong>目标</strong>：第一个站上线（哪怕很丑）。验证从代码到部署全通。
+      </p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Day 5-6</div>
+      <h4>学 Olivier 的逐 Section 构建法</h4>
+      <p>
+        读 Olivier 的 <a href="https://x.com/oliviercroguy/status/2029645122879574349" style="color:var(--accent);">Setup Guide</a> 完整版<br>
+        用他的方法重构你的首页：截图竞品 → 逐 section 让 Claude 重写 → 每次出 2-3 变体<br>
+        <strong>目标</strong>：首页从"能用"变成"好看"
+      </p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Day 7-8</div>
+      <h4>跑通内容管道</h4>
+      <p>
+        读你的笔记中 Brandon Leibowitz 的 Profit Matrix + Answer-First<br>
+        告诉 Claude："帮我做 5 个底部漏斗关键词的 SEO 博客，用 Answer-First 结构"<br>
+        审核 → 推送 Sanity → 验证 ISR 自动更新<br>
+        <strong>目标</strong>：5 篇博客上线，内容管道全通
+      </p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Day 9-10</div>
+      <h4>学 Cody 的 Agent 思维</h4>
+      <p>
+        读 Cody 的 <a href="https://x.com/codyschneiderxx/status/2023849940401770686" style="color:var(--accent);">GTM Engineering Notion 指南</a><br>
+        读你的笔记 <code>guide-cody-schneider</code> 的 Agent 架构章节<br>
+        尝试创建第一个 Claude Code Skill：<code>/content-batch</code><br>
+        <strong>目标</strong>：一句话触发 → 批量生成 → 审核 → 发布的自动化流程
+      </p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Day 11-12</div>
+      <h4>矩阵验证</h4>
+      <p>
+        Clone 第一个站的 config → 改品牌信息 → 部署第二个站<br>
+        验证：两个站独立运行，内容管道各自独立<br>
+        <strong>目标</strong>：证明"一套代码 N 个站"可行
+      </p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-time">Day 13-14</div>
+      <h4>产品页 + 回顾</h4>
+      <p>
+        导入产品数据（CSV）→ Claude 批量处理 → 生成产品页 → 内链到博客<br>
+        回顾两周学到了什么 → 调整下一步计划<br>
+        <strong>目标</strong>：完整的站（首页 + 产品页 + 博客 + SEO 基建）上线
+      </p>
+    </div>
+  </div>
+
+  <div class="pullquote">
+    不要试图看完所有视频再动手。<br>
+    Day 1 看概念，Day 3 就让 Claude 搭站。<br>
+    遇到不懂的再回去查——这是最快的学法。
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p>本文档仅供内部参考，数据截止 2026-04-01，不构成投资或法律建议。</p>
+  <p class="sig">www.dinghuo.org · 点塔七层，不如暗处一灯</p>
+</footer>
+
+<!-- SCROLL REVEAL -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const els = document.querySelectorAll('.phase, .card, .step, .flow-diagram, .pullquote, .cols-2, .cols-3, .cols-sidebar, .timeline');
+  els.forEach(el => el.classList.add('reveal'));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  els.forEach(el => observer.observe(el));
+});
+</script>
+
+</body>
+</html>

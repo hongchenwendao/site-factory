@@ -1,0 +1,4 @@
+{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend development guide"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Header CTA lives in a server component and must keep internal links using next/link-compatible patterns."}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "Internal CTA links must stay as internal Next links and preserve accessible, server-rendered markup."}

@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "apps/site-a" },
+    { "path": "packages/ui" },
+    { "path": "packages/sanity" },
+    { "path": "packages/seo" },
+    { "path": "packages/content" }
+  ]
+}

@@ -1,0 +1,9 @@
+{"file": ".trellis/workflow.md", "reason": "Project workflow and conventions"}
+{"file": ".trellis/spec/backend/index.md", "reason": "Backend development guide"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "Frontend development guide"}
+{"file": ".trellis/spec/frontend/directory-structure.md", "reason": "Page structure reference"}
+{"file": ".trellis/spec/frontend/component-guidelines.md", "reason": "Component patterns"}
+{"file": ".trellis/spec/frontend/type-safety.md", "reason": "Type safety and Zod validation"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "SEO and quality standards"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "API error handling patterns"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "Backend quality standards"}
