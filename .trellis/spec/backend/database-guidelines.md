@@ -141,21 +141,50 @@ export async function getAllSlugs(): Promise<{ posts: string[], products: string
 
 ## Write Operations (Content Pipeline)
 
-Content is written via the **write client** (server-side only, requires API token):
+Content is written via the **write client** (server-side only, requires `SANITY_API_WRITE_TOKEN` env var). All mutation functions live in `packages/sanity/src/mutations.ts` and return `MutationResult`:
 
 ```typescript
-// Content pipeline: batch create posts
-export async function createPost(post: CreatePostInput): Promise<string> {
-  const doc = {
-    _type: 'post',
-    title: post.title,
-    slug: { current: slugify(post.title) },
-    body: post.body, // Portable Text array
-    publishedAt: new Date().toISOString(),
-    seo: { metaTitle: post.metaTitle, metaDescription: post.metaDescription },
-  };
-  const result = await writeClient.create(doc);
-  return result._id;
+interface MutationResult {
+  documentId: string;
+  success: boolean;
+  error?: string;
+}
+```
+
+### Available Mutations
+
+| Function | Purpose |
+| ------- | ------- |
+| `createPost(input)` | Create blog post in `draft` status |
+| `updatePostStatus(id, status)` | Transition post status |
+| `publishPost(id)` | Set `status: "published"` + update `publishedAt` |
+| `batchUpdatePostStatus(ids, status)` | Batch status update |
+| `createProduct(input)` | Create product |
+| `batchCreateProducts(inputs)` | Batch create products |
+| `deleteDocument(id)` | Delete any document by ID |
+
+### Post Status State Machine
+
+```text
+draft → in_review → published
+```
+
+- All new posts from pipeline enter as `draft`
+- Frontend queries filter `status == "published"` — drafts never leak to production
+- Admin query `getAllPostSummaries()` fetches all statuses (requires write client)
+
+### Error Handling Pattern
+
+All mutations use try-catch and log with `[mutation]` prefix:
+
+```typescript
+try {
+  const result = await client.create(doc);
+  return { documentId: result._id, success: true };
+} catch (error) {
+  const message = error instanceof Error ? error.message : String(error);
+  console.error("[mutation] createPost failed:", { slug: input.slug, error: message });
+  return { documentId: "", success: false, error: message };
 }
 ```
 

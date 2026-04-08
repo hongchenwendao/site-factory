@@ -24,6 +24,27 @@ export function getSanityClient(options?: { useToken?: boolean }) {
   });
 }
 
+/**
+ * Write-capable client for content pipeline operations.
+ * Requires SANITY_API_WRITE_TOKEN env var.
+ */
+export function getSanityWriteClient() {
+  const config = getSanityRuntimeConfig();
+  if (!config?.writeToken) {
+    return null;
+  }
+
+  return createClient({
+    apiVersion: config.apiVersion,
+    dataset: config.dataset,
+    projectId: config.projectId,
+    token: config.writeToken,
+    useCdn: false,
+    perspective: "raw" as const,
+    stega: { enabled: false },
+  });
+}
+
 function getImageBuilder(): ImageUrlBuilder | null {
   const config = getSanityRuntimeConfig();
   if (!config) {

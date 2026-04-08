@@ -6,6 +6,17 @@ export const postType = defineType({
   type: "document",
   fields: [
     defineField({
+      name: "status",
+      title: "Status",
+      type: "string",
+      options: {
+        list: ["draft", "in_review", "published"],
+        layout: "radio",
+      },
+      initialValue: "draft",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: "title",
       title: "Title",
       type: "string",

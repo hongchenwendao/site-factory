@@ -48,12 +48,15 @@ export interface ProductCategoryReference {
   slug: string;
 }
 
+export type PostStatus = "draft" | "in_review" | "published";
+
 export interface PostSummary {
   id: string;
   title: string;
   slug: string;
   excerpt: string;
   publishedAt: string;
+  status: PostStatus;
   featuredImage: SanityImage;
   categories: string[];
   relatedProducts: ProductReference[];

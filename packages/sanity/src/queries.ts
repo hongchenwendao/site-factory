@@ -1,5 +1,5 @@
 import { groq } from "next-sanity";
-import { getSanityClient } from "./client";
+import { getSanityClient, getSanityWriteClient } from "./client";
 import { demoCategories, demoPosts, demoProducts, demoSiteSettings } from "./demo/data";
 import type { PostDetail, PostSummary, ProductCategorySummary, ProductDetail, ProductSummary, SiteSettings } from "./types";
 
@@ -8,6 +8,7 @@ function normalizePostSummary(post: PostSummary): PostSummary {
     ...post,
     categories: post.categories ?? [],
     relatedProducts: post.relatedProducts ?? [],
+    status: post.status ?? "published",
   };
 }
 
@@ -18,6 +19,44 @@ function normalizePostDetail(post: PostDetail): PostDetail {
     faq: post.faq ?? [],
   };
 }
+
+/** Fetch all posts regardless of status (for pipeline/admin use). */
+const allPostSummariesQuery = groq`
+  *[_type == "post"] | order(publishedAt desc) {
+    "id": _id,
+    title,
+    "slug": slug.current,
+    excerpt,
+    publishedAt,
+    status,
+    "featuredImage": {
+      "alt": coalesce(featuredImage.alt, title),
+      "asset": {
+        "url": featuredImage.asset->url,
+        "width": featuredImage.asset->metadata.dimensions.width,
+        "height": featuredImage.asset->metadata.dimensions.height
+      }
+    },
+    "categories": categories[]->title,
+    "relatedProducts": relatedProducts[]->{
+      name,
+      "slug": slug.current
+    },
+    "seo": {
+      "title": seo.metaTitle,
+      "description": seo.metaDescription,
+      keywords,
+      "ogImage": {
+        "alt": coalesce(seo.ogImage.alt, title),
+        "asset": {
+          "url": seo.ogImage.asset->url,
+          "width": seo.ogImage.asset->metadata.dimensions.width,
+          "height": seo.ogImage.asset->metadata.dimensions.height
+        }
+      }
+    }
+  }
+`;
 
 function normalizeProductSummary(product: ProductSummary): ProductSummary {
   return {
@@ -37,12 +76,13 @@ function normalizeProductDetail(product: ProductDetail): ProductDetail {
 }
 
 const postSummaryQuery = groq`
-  *[_type == "post"] | order(publishedAt desc) {
+  *[_type == "post" && status == "published"] | order(publishedAt desc) {
     "id": _id,
     title,
     "slug": slug.current,
     excerpt,
     publishedAt,
+    status,
     "featuredImage": {
       "alt": coalesce(featuredImage.alt, title),
       "asset": {
@@ -73,12 +113,13 @@ const postSummaryQuery = groq`
 `;
 
 const postDetailQuery = groq`
-  *[_type == "post" && slug.current == $slug][0] {
+  *[_type == "post" && slug.current == $slug && status == "published"][0] {
     "id": _id,
     title,
     "slug": slug.current,
     excerpt,
     publishedAt,
+    status,
     body,
     "faq": faq[]{
       question,
@@ -285,4 +326,14 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
 export async function getProductCategories(): Promise<ProductCategorySummary[]> {
   return fetchWithFallback(productCategoryQuery, undefined, demoCategories);
+}
+
+/** Get all posts including drafts (requires write client). */
+export async function getAllPostSummaries(): Promise<PostSummary[]> {
+  const client = getSanityWriteClient();
+  if (!client) {
+    return [];
+  }
+  const posts = await client.fetch<PostSummary[]>(allPostSummariesQuery);
+  return posts.map(normalizePostSummary);
 }

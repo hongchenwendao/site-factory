@@ -4,6 +4,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_SANITY_PROJECT_ID: z.string().min(1),
   NEXT_PUBLIC_SANITY_DATASET: z.string().min(1),
   SANITY_API_READ_TOKEN: z.string().min(1).optional(),
+  SANITY_API_WRITE_TOKEN: z.string().min(1).optional(),
   SANITY_REVALIDATE_SECRET: z.string().min(1).optional(),
 });
 
@@ -12,6 +13,7 @@ export interface SanityRuntimeConfig {
   dataset: string;
   apiVersion: string;
   readToken?: string;
+  writeToken?: string;
   revalidateSecret?: string;
 }
 
@@ -31,6 +33,10 @@ export function getSanityRuntimeConfig(): SanityRuntimeConfig | null {
 
   if (result.data.SANITY_API_READ_TOKEN) {
     config.readToken = result.data.SANITY_API_READ_TOKEN;
+  }
+
+  if (result.data.SANITY_API_WRITE_TOKEN) {
+    config.writeToken = result.data.SANITY_API_WRITE_TOKEN;
   }
 
   if (result.data.SANITY_REVALIDATE_SECRET) {

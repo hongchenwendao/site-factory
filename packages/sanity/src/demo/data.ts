@@ -125,6 +125,7 @@ export const demoPosts: PostDetail[] = [
     id: "post-size-solar",
     title: "How to size a solar deployment for a new facility",
     slug: "size-solar-for-new-facility",
+    status: "published",
     excerpt:
       "Answer-first framework for estimating panel count, roof area, and payback before you engage EPC vendors.",
     publishedAt: "2026-04-02T08:00:00.000Z",
@@ -157,6 +158,7 @@ export const demoPosts: PostDetail[] = [
     id: "post-battery-storage",
     title: "What battery storage changes for manufacturing uptime",
     slug: "battery-storage-for-manufacturing-uptime",
+    status: "published",
     excerpt:
       "Battery storage is not just backup power. It smooths load swings, protects critical lines, and gives operators more control over energy costs.",
     publishedAt: "2026-04-01T08:00:00.000Z",
